@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Decision Tree - 创业决策树</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #64ffda, #00bfa5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #8892b0;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #8892b0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .tab:hover {
+            background: rgba(100, 255, 218, 0.1);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+        
+        .tab.active {
+            background: rgba(100, 255, 218, 0.2);
+            border-color: #64ffda;
+            color: #64ffda;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Tree Container */
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            overflow-x: auto;
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        /* Interactive Tree */
+        .interactive-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .tree-level {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .tree-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .node-content {
+            background: rgba(100, 255, 218, 0.1);
+            border: 2px solid #64ffda;
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 180px;
+            max-width: 280px;
+        }
+        
+        .node-content:hover {
+            background: rgba(100, 255, 218, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(100, 255, 218, 0.2);
+        }
+        
+        .node-content.yes {
+            background: rgba(46, 204, 113, 0.1);
+            border-color: #2ecc71;
+        }
+        
+        .node-content.no {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: #e74c3c;
+        }
+        
+        .node-content.warning {
+            background: rgba(241, 196, 15, 0.1);
+            border-color: #f1c40f;
+        }
+        
+        .node-content.selected.yes {
+            background: rgba(46, 204, 113, 0.3);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+        }
+        
+        .node-content.selected.no {
+            background: rgba(231, 76, 60, 0.3);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+        
+        .node-question {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        
+        .node-hint {
+            font-size: 0.75rem;
+            color: #8892b0;
+        }
+        
+        .node-label {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2e;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #64ffda;
+            border: 1px solid #64ffda;
+        }
+        
+        .connector {
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, #64ffda, rgba(100, 255, 218, 0.3));
+        }
+        
+        .connector.yes { background: linear-gradient(to bottom, #2ecc71, rgba(46, 204, 113, 0.3)); }
+        .connector.no { background: linear-gradient(to bottom, #e74c3c, rgba(231, 76, 60, 0.3)); }
+        
+        .branch-labels {
+            display: flex;
+            gap: 60px;
+            margin-bottom: 5px;
+        }
+        
+        .branch-label {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .branch-label.yes {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+        
+        .branch-label.no {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        
+        .branch-group {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .result {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            min-width: 220px;
+            border: 2px solid;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result.success {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+        
+        .result.danger {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        .result.warning {
+            border-color: #f1c40f;
+            background: rgba(241, 196, 15, 0.1);
+        }
+        
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .result.success .result-title { color: #2ecc71; }
+        .result.danger .result-title { color: #e74c3c; }
+        .result.warning .result-title { color: #f1c40f; }
+        
+        .result-desc {
+            font-size: 0.85rem;
+            color: #8892b0;
+            line-height: 1.6;
+        }
+        
+        .result-action {
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: rgba(100, 255, 218, 0.1);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #64ffda;
+        }
+        
+        /* Quiz Mode */
+        .quiz-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .quiz-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #64ffda;
+        }
+        
+        .quiz-progress {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-step {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        
+        .quiz-step.completed { background: #2ecc71; }
+        .quiz-step.current { background: #64ffda; }
+        
+        .quiz-question {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quiz-option {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .quiz-option:hover {
+            border-color: #64ffda;
+            background: rgba(100, 255, 218, 0.1);
+        }
+        
+        .quiz-option.selected.yes {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.2);
+        }
+        
+        .quiz-option.selected.no {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+        }
+        
+        .quiz-result {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .quiz-restart {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(100, 255, 218, 0.2);
+            border: 1px solid #64ffda;
+            border-radius: 8px;
+            color: #64ffda;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .quiz-restart:hover {
+            background: rgba(100, 255, 218, 0.3);
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+        
+        .legend-text {
+            font-size: 0.9rem;
+            color: #8892b0;
+        }
+        
+        /* Quick Nav */
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .quick-btn:hover {
+            background: rgba(100, 255, 218, 0.1);
+            border-color: #64ffda;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.show { display: flex; }
+        
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            color: #ccd6f6;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 768px) {
+            .tree-container { padding: 10px; }
+            .branch-group { flex-direction: column; gap: 15px; }
+            .branch-labels { gap: 20px; }
+            .legend { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 Startup Decision Tree</h1>
+        <p class="subtitle">创业关键决策树 | 引导你做出正确选择</p>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('pmf')">PMF验证决策</div>
+            <div class="tab" onclick="switchTab('growth')">增长策略决策</div>
+            <div class="tab" onclick="switchTab('team')">团队建设决策</div>
+            <div class="tab" onclick="switchTab('fundraising')">融资决策</div>
+            <div class="tab" onclick="switchTab('interactive')">🎯 互动测试</div>
+        </div>
+        
+        <!-- PMF Decision Tree -->
+        <div class="tab-content active" id="pmf">
+            <div class="tree-container">
+                <div class="interactive-tree">
+                    <div class="tree-level">
+                        <div class="tree-branch">
+                            <div class="node">
+                                <div class="node-content">
+                                    <div class="node-label">START</div>
+                                    <div class="node-question">你有明确的客户问题吗？</div>
+                                    <div class="node-hint">用户是否主动想解决此问题？</div>
+                                </div>
+                                <div class="connector"></div>
+                                <div class="branch-labels">
+                                    <div class="branch-label yes" onclick="selectOption(this, 'yes')">是</div>
+                                    <div class="branch-label no" onclick="selectOption(this, 'no')">否</div>
+                                </div>
+                                <div class="connector yes"></div>
+                                <div class="node-content yes">
+                                    <div class="node-question">已验证解决方案？</div>
+                                    <div class="node-hint">用户愿意为MVP付费？</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Growth Decision Tree -->
+        <div class="tab-content" id="growth">
+            <div class="tree-container">
+                <div class="interactive-tree">
+                    <div class="tree-level">
+                        <div class="tree-branch">
+                            <div class="node">
+                                <div class="node-content">
+                                    <div class="node-label">START</div>
+                                    <div class="node-question">PMF已达成？</div>
+                                    <div class="node-hint">自然增长 > 30%?</div>
+                                </div>
+                                <div class="connector"></div>
+                                <div class="branch-labels">
+                                    <div class="branch-label yes">是</div>
+                                    <div class="branch-label no">否</div>
+                                </div>
+                                <div class="connector yes"></div>
+                                <div class="node-content yes">
+                                    <div class="node-question">单位经济健康？</div>
+                                    <div class="node-hint">LTV/CAC > 3?</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Decision Tree -->
+        <div class="tab-content" id="team">
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-branch">
+                        <div class="node">
+                            <div class="node-content">
+                                <div class="node-label">START</div>
+                                <div class="node-question">团队能力匹配业务？</div>
+                                <div class="node-hint">技术+商业+运营</div>
+                            </div>
+                            <div class="connector"></div>
+                            <div class="branch-labels">
+                                <div class="branch-label yes">匹配</div>
+                                <div class="branch-label no">不匹配</div>
+                            </div>
+                            <div class="connector no"></div>
+                            <div class="node-content warning">
+                                <div class="node-question">差距可弥补？</div>
+                                <div class="node-hint">招聘/培训/外包</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fundraising Decision Tree -->
+        <div class="tab-content" id="fundraising">
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-branch">
+                        <div class="node">
+                            <div class="node-content">
+                                <div class="node-label">START</div>
+                                <div class="node-question">Runway充足？</div>
+                                <div class="node-hint">> 12个月?</div>
+                            </div>
+                            <div class="connector"></div>
+                            <div class="branch-labels">
+                                <div class="branch-label yes">是</div>
+                                <div class="branch-label no">否</div>
+                            </div>
+                            <div class="connector no"></div>
+                            <div class="node-content warning">
+                                <div class="node-question">数据支持融资？</div>
+                                <div class="node-hint">增长趋势良好?</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Quiz -->
+        <div class="tab-content" id="interactive">
+            <div class="quiz-panel">
+                <div class="quiz-title">🎯 创业健康度测试</div>
+                <div class="quiz-progress" id="quizProgress">
+                    <div class="quiz-step current"></div>
+                    <div class="quiz-step"></div>
+                    <div class="quiz-step"></div>
+                    <div class="quiz-step"></div>
+                    <div class="quiz-step"></div>
+                </div>
+                <div id="quizContent">
+                    <div class="quiz-question" id="quizQuestion">问题加载中...</div>
+                    <div class="quiz-options" id="quizOptions"></div>
+                </div>
+                <div class="quiz-result" id="quizResult" style="display:none;"></div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(100, 255, 218, 0.3); border: 2px solid #64ffda;"></div>
+                <span class="legend-text">决策节点</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(46, 204, 113, 0.3); border: 2px solid #2ecc71;"></div>
+                <span class="legend-text">理想路径</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(241, 196, 15, 0.3); border: 2px solid #f1c40f;"></div>
+                <span class="legend-text">需调整</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(231, 76, 60, 0.3); border: 2px solid #e74c3c;"></div>
+                <span class="legend-text">高风险</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">详情</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz Data
+        const quizData = [
+            {
+                question: "你的用户会主动寻找你的产品吗？",
+                options: [
+                    { text: "是的，有自然需求", type: "yes" },
+                    { text: "需要我们引导", type: "no" },
+                    { text: "不确定", type: "neutral" }
+                ]
+            },
+            {
+                question: "用户留存曲线是否平稳？",
+                options: [
+                    { text: "是的，留存稳定", type: "yes" },
+                    { text: "急剧下降", type: "no" },
+                    { text: "不清楚", type: "neutral" }
+                ]
+            },
+            {
+                question: "LTV/CAC 是否大于 3？",
+                options: [
+                    { text: "是的，健康", type: "yes" },
+                    { text: "不到3", type: "no" },
+                    { text: "还在计算", type: "neutral" }
+                ]
+            },
+            {
+                question: "团队能力是否互补？",
+                options: [
+                    { text: "技术+商业兼备", type: "yes" },
+                    { text: "能力单一", type: "no" },
+                    { text: "部分互补", type: "neutral" }
+                ]
+            },
+            {
+                question: "Runway 是否超过 12 个月？",
+                options: [
+                    { text: "是的，资金充足", type: "yes" },
+                    { text: "不足12个月", type: "no" },
+                    { text: "刚好12个月", type: "neutral" }
+                ]
+            }
+        ];
+        
+        let currentStep = 0;
+        let score = 0;
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            if (tabId === 'interactive') {
+                startQuiz();
+            }
+        }
+        
+        function startQuiz() {
+            currentStep = 0;
+            score = 0;
+            updateQuiz();
+        }
+        
+        function updateQuiz() {
+            const progress = document.getElementById('quizProgress');
+            const steps = progress.querySelectorAll('.quiz-step');
+            steps.forEach((step, i) => {
+                step.classList.remove('current', 'completed');
+                if (i < currentStep) step.classList.add('completed');
+                if (i === currentStep) step.classList.add('current');
+            });
+            
+            if (currentStep < quizData.length) {
+                const q = quizData[currentStep];
+                document.getElementById('quizQuestion').textContent = q.question;
+                document.getElementById('quizOptions').innerHTML = q.options.map(opt => `
+                    <div class="quiz-option" onclick="selectQuizOption(this, '${opt.type}')">${opt.text}</div>
+                `).join('');
+                document.getElementById('quizContent').style.display = 'block';
+                document.getElementById('quizResult').style.display = 'none';
+            } else {
+                showResult();
+            }
+        }
+        
+        function selectQuizOption(el, type) {
+            document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected', type);
+            
+            if (type === 'yes') score += 2;
+            else if (type === 'neutral') score += 1;
+            
+            setTimeout(() => {
+                currentStep++;
+                updateQuiz();
+            }, 500);
+        }
+        
+        function showResult() {
+            document.getElementById('quizContent').style.display = 'none';
+            const resultDiv = document.getElementById('quizResult');
+            resultDiv.style.display = 'block';
+            
+            const maxScore = quizData.length * 2;
+            const percentage = (score / maxScore) * 100;
+            
+            let status, message, action;
+            if (percentage >= 80) {
+                status = "✅ 状态良好";
+                message = "你的创业项目处于健康状态，继续保持！";
+                action = "关注规模化挑战";
+            } else if (percentage >= 50) {
+                status = "⚠️ 需要关注";
+                message = "存在一些风险点，建议重点关注薄弱环节。";
+                action = "制定改进计划";
+            } else {
+                status = "🚨 高风险";
+                message = "多个维度存在问题，需要立即干预。";
+                action = "优先解决核心问题";
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="result-title">${status}</div>
+                <div class="result-desc" style="margin-top: 15px;">
+                    <p>得分: ${score}/${maxScore} (${percentage.toFixed(0)}%)</p>
+                    <p style="margin-top: 15px;">${message}</p>
+                </div>
+                <div class="result-action" style="margin-top: 20px;">${action}</div>
+                <button class="quiz-restart" onclick="startQuiz()">重新测试</button>
+            `;
+        }
+        
+        function selectOption(el, type) {
+            el.parentElement.querySelectorAll('.branch-label').forEach(l => l.classList.remove('selected'));
+            el.classList.add('selected', type);
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

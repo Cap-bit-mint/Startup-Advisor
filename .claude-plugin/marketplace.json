@@ -1,0 +1,38 @@
+{
+  "name": "Startup-Advisor",
+  "version": "1.0.0",
+  "description": "基于失败案例分析的创业决策辅助系统",
+  "author": "Startup-Advisor Team",
+  "skills": [
+    {
+      "name": "startup-advisor",
+      "path": "startup-advisor/SKILL.md",
+      "description": "主入口 Skill，协调所有子模块",
+      "tags": ["startup", "decision", "advisor"]
+    },
+    {
+      "name": "advisor-failure",
+      "path": "advisor-failure/SKILL.md",
+      "description": "失败案例深度分析模块",
+      "tags": ["failure", "analysis", "risk"]
+    },
+    {
+      "name": "advisor-pitch",
+      "path": "advisor-pitch/SKILL.md",
+      "description": "创业路演优化模块",
+      "tags": ["pitch", "investor", "presentation"]
+    }
+  ],
+  "assets": [
+    {
+      "name": "failure-matrix",
+      "path": "assets/failure-matrix.html",
+      "type": "visualization"
+    },
+    {
+      "name": "decision-tree",
+      "path": "assets/decision-tree.html",
+      "type": "visualization"
+    }
+  ]
+}

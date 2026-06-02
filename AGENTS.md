@@ -1,0 +1,118 @@
+# Startup-Advisor AGENTS.md
+
+## 项目概述
+Startup-Advisor 是一个基于失败案例分析的创业决策辅助系统，通过分析真实的创业失败案例，帮助创业者识别风险、避免常见陷阱。
+
+## 架构原则
+
+### 1. Skill 架构
+- **startup-advisor**: 主入口 Skill，协调所有子模块
+- **advisor-failure**: 失败案例深度分析
+- **advisor-pitch**: 创业路演优化
+
+### 2. 文件路径约定
+- 所有 Skill 入口文件命名为 `SKILL.md`
+- 参考文档放在各 Skill 的 `references/` 目录下
+- 模板文件放在 `references/templates/` 目录
+- 分析输出放在 `{project}/` 目录下
+
+### 3. 提示工程规范
+- 使用结构化输出（JSON/YAML）
+- 包含置信度标识
+- 强制风险分级
+- 提供可操作的建议
+- 所有案例必须标注时间戳
+
+## 数据传递机制
+
+### Skill 间调用链
+```
+用户 → @startup-advisor (主入口)
+         ↓
+    判断任务类型
+         ↓
+    ├── 风险评估 → 读取 references/ 下文档
+    ├── 失败案例分析 → 调用 @advisor-failure
+    │                    ↓
+    │               输出: {project}/failure-analysis/
+    └── 路演优化 → 调用 @advisor-pitch
+                      ↓
+                 输出: {project}/pitch-optimization/
+```
+
+### 数据传递规范
+
+#### 读取优先级
+1. 当前会话上下文（最高优先级）
+2. `{project}/` 下的历史输出文件
+3. `references/` 静态文档（最低优先级）
+
+#### 输出文件格式
+```markdown
+---
+analysis_type: failure|pitch|general
+timestamp: ISO8601
+project_context: 项目摘要
+confidence: high|moderate|low
+data_source: 来源文档
+---
+
+# 分析报告标题
+
+[内容]
+```
+
+#### 输出文件路径
+| 分析类型 | 文件路径 |
+|----------|----------|
+| 失败案例分析 | `{project}/failure-analysis/{case-name}-{timestamp}.md` |
+| 路演优化 | `{project}/pitch-optimization/{timestamp}.md` |
+| 综合分析 | `{project}/analysis-{timestamp}.md` |
+
+## 分析方法论
+
+### 失败案例分析流程
+1. 收集基本信息（阶段、赛道、融资情况）
+2. 识别关键失败节点
+3. 分类失败模式
+4. 提取反模式教训
+5. 映射到当前项目风险
+
+### 决策支持框架
+- 问题定义 → 风险评估 → 模式匹配 → 建议生成
+
+## 质量标准
+- 所有建议必须基于具体案例
+- 风险评级使用统一量表（1-5分）
+- 禁止空洞鼓励，必须指出具体风险
+- 案例必须标注时间戳和数据来源
+
+## 内容时效性规则
+- 分析时必须标注数据/案例的来源和时间
+- 明确区分"具体案例支撑" vs "统计趋势推断"
+- 行业统计数据需标注"截至 YYYY-MM"
+- 案例引用需注明年份
+
+## 分析约束
+- 风险评级必须说明置信度来源
+- 禁止脱离案例给出"放之四海而准"的建议
+- 路演优化需基于具体赛道，不能套用通用模板
+- 所有建议必须包含"基于案例 X"或"基于统计 Y"
+
+## Skill 调用规范
+- 简单问询 → 使用 `startup-advisor`
+- 深度案例分析 → 调用 `advisor-failure`
+- 路演/融资相关 → 调用 `advisor-pitch`
+- 不得跳过 Skill 直接修改 references/ 下的文档
+
+## 质量门槛
+- 风险评级 > 3 的项目，必须列出至少 2 个匹配案例
+- 反模式建议必须包含"预防措施"和"应对策略"
+- 路演优化输出必须包含 Q&A 预演
+
+## 禁止事项
+- 不基于假设创造案例
+- 不修改他人案例内容（只补充）
+- 不在分析中混入主观价值观判断
+- 不提供未经验证的"成功秘诀"
+- 不美化风险或淡化失败案例
