@@ -108,8 +108,10 @@ openclaw skill import https://github.com/Cap-bit-mint/Startup-Advisor/raw/main/a
   - 验证内容创作者的真实痛点
   - 明确与ChatGPT/Jasper的差异化
 - **相关案例**:
-  - [Juicero](https://www.loot-drop.io/) - 伪需求
-  - [Quibi](https://www.loot-drop.io/) - 竞争低估
+  - [Quibi](https://www.loot-drop.io/startup/1891-quibi) - 竞争低估
+  - [WeWork](https://www.loot-drop.io/startup/2035-wework) - 估值泡沫
+  - [Fab.com](https://www.loot-drop.io/startup/2171-fabcom) - 商业模式缺陷
+  - [Homejoy](https://www.loot-drop.io/startup/2189-homejoy) - 政策风险
 
 ---
 
@@ -121,7 +123,7 @@ openclaw skill import https://github.com/Cap-bit-mint/Startup-Advisor/raw/main/a
 - **失败时间线**: 2013成立 → 2016 B轮$67M → 2017融资失败关闭
 - **失败原因**: 伪需求、技术傲慢、成本结构失控
 - **核心教训**: 永远从用户真实需求出发，避免过度工程化
-- **相关模式**: 1.1伪需求、2.1产品市场不匹配、5.2估值泡沫
+- **相关模式**: 1.1伪需求、2.1产品市场不匹配、5.2估值泡沫（[WeWork详情](https://www.loot-drop.io/startup/2035-wework)）
 
 ---
 
