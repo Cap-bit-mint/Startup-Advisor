@@ -107,7 +107,9 @@ openclaw skill import https://github.com/Cap-bit-mint/Startup-Advisor/raw/main/a
 - **建议**:
   - 验证内容创作者的真实痛点
   - 明确与ChatGPT/Jasper的差异化
-- **相关案例**: Juicero（伪需求）、Quibi（竞争低估）
+- **相关案例**:
+  - [Juicero](https://www.loot-drop.io/) - 伪需求
+  - [Quibi](https://www.loot-drop.io/) - 竞争低估
 
 ---
 
