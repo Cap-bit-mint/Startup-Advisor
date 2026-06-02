@@ -108,7 +108,7 @@ triggers:
 ```markdown
 ---
 analysis_type: failure
-case_name: {案�名}
+case_name: {案例名}
 timestamp: {ISO8601}
 confidence: high|moderate|low
 ---
