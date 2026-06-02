@@ -74,16 +74,6 @@ nano ~/Library/Application\ Support/Claude/claude_desktop_config.json
 curl -fsSL https://raw.githubusercontent.com/Cap-bit-mint/Startup-Advisor/main/scripts/install-claude.sh | bash
 ```
 
-或手动执行：
-```bash
-# 克隆仓库
-git clone https://github.com/Cap-bit-mint/Startup-Advisor.git ~/Startup-Advisor
-
-# 运行安装脚本
-chmod +x ~/Startup-Advisor/scripts/install-claude.sh
-~/Startup-Advisor/scripts/install-claude.sh
-```
-
 #### OpenClaw
 
 ```bash
@@ -100,115 +90,151 @@ openclaw skill import https://github.com/Cap-bit-mint/Startup-Advisor/raw/main/a
 
 直接在 Codex 中导入 Skill 路径即可使用。
 
-### 手动安装
-
-```bash
-# 克隆仓库
-git clone https://github.com/Cap-bit-mint/Startup-Advisor.git
-
-# 进入目录
-cd Startup-Advisor
-
-# 安装依赖（如果需要）
-npm install
-```
-
 ---
 
 ## 使用用例
 
 ### 用例1：分析创业想法
 
-```
-用户: "我打算做一个 AI 写作助手，面向内容创作者，你觉得靠谱吗？"
+**用户**：我打算做一个 AI 写作助手，面向内容创作者，你觉得靠谱吗？
 
-→ @startup-advisor
+**Agent**：分析报告
+- **风险等级**: 3（中等）
+- **置信度**: moderate（基于AI助手赛道统计）
+- **匹配模式**:
+  - 伪需求（中等风险）
+  - 竞争认知偏差（高风险）
+- **建议**:
+  - 验证内容创作者的真实痛点
+  - 明确与ChatGPT/Jasper的差异化
+- **相关案例**: Juicero（伪需求）、Quibi（竞争低估）
 
-分析报告:
-{
-  "risk_level": 3,
-  "matched_patterns": [
-    {"pattern": "伪需求", "relevance": "medium"},
-    {"pattern": "竞争认知偏差", "relevance": "high"}
-  ],
-  "warning_signs": [
-    {"sign": "AI赛道竞争激烈", "severity": "high"},
-    {"sign": "差异化不明确", "severity": "medium"}
-  ],
-  "recommendations": [
-    {"priority": "high", "action": "验证内容创作者的真实痛点"},
-    {"priority": "medium", "action": "明确与ChatGPT/Jasper的差异化"}
-  ]
-}
-```
+---
 
-### 用例2：��究失败案例
+### 用例2：研究失败案例
 
-```
-用户: "Juicero 为什么会失败？有什么教训？"
+**用户**：Juicero 为什么会失败？有什么教训？
 
-→ @advisor-failure
+**Agent**：案例分析
+- **失败时间线**: 2013成立 → 2016 B轮$67M → 2017融资失败关闭
+- **失败原因**: 伪需求、技术傲慢、成本结构失控
+- **核心教训**: 永远从用户真实需求出发，避免过度工程化
+- **相关模式**: 1.1伪需求、2.1产品市场不匹配、5.2估值泡沫
 
-分析报告:
-{
-  "case_summary": {
-    "name": "Juicero",
-    "failure_year": 2017,
-    "funding": "$118.5M"
-  },
-  "root_causes": [
-    {"cause": "伪需求", "severity": "极高"},
-    {"cause": "技术傲慢", "severity": "高"},
-    {"cause": "成本结构失控", "severity": "高"}
-  ],
-  "lessons": [
-    {"lesson": "永远从用户真实需求出发", "actionable": "用塑料袋测试替代�案"},
-    {"lesson": "避免过度工程化", "actionable": "简单方案优先"}
-  ]
-}
-```
+---
 
 ### 用例3：优化路演
 
-```
-用户: "我准备融资A轮，帮我预演投资人可能问的问题"
+**用户**：我准备融资A轮，帮我预演投资人可能问的问题
 
-→ @advisor-pitch
+**Agent**：A轮Q&A预演
 
-Q&A 预演:
-{
-  "round": "A轮",
-  "anticipated_questions": [
-    {"question": "你的增长数据如何？", "difficulty": "medium", "suggested_answer": "展示MRR增长曲线..."},
-    {"question": "你的单位经济模型？", "difficulty": "hard", "suggested_answer": "LTV/CAC = X, CAC回收期 = Y月..."},
-    {"question": "如果大公司复制你们怎么办？", "difficulty": "hard", "suggested_answer": "我们已有X项壁垒..."}
-  ]
-}
-```
+**核心问题**
+
+| 问题 | 考察点 | 建议回答 |
+|------|--------|----------|
+| 增长数据如何？ | 执行力 | MRR $50K→$200K（近3个月），月环比增长25-30% |
+| 单位经济模��？ | 商业模式 | LTV/CAC = 4，回收期8个月 |
+| 护城河是什么？ | 防御性 | 技术专利申请中 + 200+企业用户数据积累 |
+
+**困难问题应对**
+
+**Q: 如果Google/大厂做了怎么办？**
+
+A: 承认这是风险，但展示差异化：
+- 我们专注[细分场景]，大厂只做通用方案
+- 我们有200+企业用户的深度数据积累
+- 大厂入场反而证明市场成立，我们可以被收购或差异化生存
+
+具体数据支撑：
+- [竞品]做了X年，我们已抢占[细分]市场份额的30%
+- 用户迁移成本高：平均集成3个内部系统
+
+**Q: 为什么你们能做成？**
+
+A: 团队优势：
+- [创始人背景]在[领域]有10年经验
+- 团队有[相关公司]背景
+
+独特洞察：
+- 我们发现[细分痛点]是通用方案解决不了的
+- 这是大厂不愿意投入精力的[细分市场]
+
+**Q: 你的估值怎么算的？**
+
+A: 基于里程碑的合理估值：
+- 上轮估值$2M对应[里程碑A]
+- 本轮估值$8M对应[里程碑B]
+- 同类公司对比：[竞品]融资X轮，估值$Y，我们的[指标]比他们好X%
+
+**反驳演练**
+
+| 投资人质疑 | 你的回应 |
+|------------|----------|
+| "市场太小" | 我们先做[细分]，再扩展到[相邻市场]，TAM从$500M到$5B |
+| "增长不够快" | 我们选择高质量增长，LTV/CAC=4比烧钱换增长更健康 |
+| "竞品太强" | [具体差异化]，我们在[场景]的NPS是60，竞品是30 |
+
+---
 
 ### 用例4：风险自检
 
-```
-用户: "我的SaaS项目月流失率8%，正常吗？"
+**用户**：我的SaaS项目月流失率8%，正常吗？
 
-→ @startup-advisor
+**Agent**：SaaS流失率风险评估
 
-风险评估:
-{
-  "risk_level": 4,
-  "confidence": "high",
-  "matched_patterns": [
-    {"pattern": "客户成功失败", "relevance": "high", "source_case": "多家SaaS公司"}
-  ],
-  "warning_signs": [
-    {"sign": "月流失率8%超过健康值5%", "severity": "high", "mitigation": "建立客户健康度监控"}
-  ],
-  "recommendations": [
-    {"priority": "high", "action": "分析流失原因", "rationale": "基于行业统计"},
-    {"priority": "high", "action": "优化Onboarding流程", "rationale": "基于成功案例"}
-  ]
-}
-```
+**行业基准对比**
+
+| 流失率 | 评级 | 说明 |
+|--------|------|------|
+| <3%/月 | 🟢 优秀 | 世界级水准，Net Revenue Retention >120% |
+| 3-5%/月 | 🟡 良好 | 健康水平，保持关注 |
+| 5-7%/月 | 🟠 一般 | 需要关注，优化留存 |
+| 7-10%/月 | 🔴 警告 | 偏高，需要立即行动 |
+| >10%/月 | 🚨 危险 | 商业模式存疑 |
+
+**月流失率8%诊断**
+
+- **风险等级**: 4/5（偏高）
+- **问题诊断**:
+  1. 月流失8% = 年流失约64%（简单计算：0.92^12≈0.16）
+  2. 需要获取约4个新用户才能弥补1个流失用户
+
+**流失根因分析**
+
+| 方向 | 问题 | 检查方法 |
+|------|------|----------|
+| 产品匹配 | 用户不是真正的PMF用户 | 用户访谈：他们为什么离开？ |
+| Onboarding | 新用户激活率低 | 首周留存<40%说明激活有问题 |
+| 价值感知 | 用户感受不到价值 | 调查：用户觉得产品值多少钱？ |
+| 竞争流失 | 被竞品抢走 | 流失访谈：他们去了哪里？ |
+| 价��因素 | 价格超出价值感知 | 对比：竞品定价 vs 我们的定价 |
+
+**改进优先级**
+
+| 优先级 | 行动 | 预期效果 |
+|--------|------|----------|
+| P0 | 建立客户健康度评分 | 提前预警流失 |
+| P0 | 优化Onboarding流程 | 目标：首周留存>50% |
+| P1 | 每周流失用户访谈 | 了解真实流失原因 |
+| P1 | 实施Customer Success | 主动关怀高风险客户 |
+| P2 | 调整定价策略 | 考虑年付折扣降低流失 |
+
+**健康度监控指标**
+
+月度监控：
+- 产品指标：周活跃率（目标 >70%）、核心功能使用率（目标 >60%）
+- 商业指标：支持工单数（异常增加=风险）、账户健康分（0-100）
+- 早期预警：30天内无登录、连续2个月ARPU下降、关键用户离职
+
+**快速改进清单**
+
+- [ ] 建立流失预警系统（流失风险评分）
+- [ ] 每周分析流失用户特征
+- [ ] 优化新用户Onboarding（目标：3步内完成核心操作）
+- [ ] 实施主动客户成功（CSM）
+- [ ] 考虑年付+季度付组合降低流失
+- [ ] 建立流失复盘机制（每月）
 
 ---
 
@@ -222,7 +248,7 @@ Q&A 预演:
 
 ### advisor-failure
 
-专注失败案例的深度分析，提取反模�和风险评估。
+专注失败案例的深度分析，提取反模式和风险评估。
 
 **触发词**: 失败案例研究、反模式、公司倒闭原因、创业雷区
 
@@ -261,15 +287,15 @@ Q&A 预演:
 
 | 工具 | 功能 |
 |------|------|
-| failure-matrix.html | 交互式风险矩阵，支持筛选和案例展开 |
-| decision-tree.html | 关键决策流程引导 |
-| risk-assessment.html | 风险评估问卷工具 |
+| [failure-matrix.html](assets/failure-matrix.html) | 交互式风险矩阵，支持筛选和案例展开 |
+| [decision-tree.html](assets/decision-tree.html) | 关键决策流程引导 |
+| [risk-assessment.html](assets/risk-assessment.html) | 风险评估问卷工具 |
 
 直接在浏览器中打开以上 HTML 文件即可使用。
 
 ---
 
-## 质量承诺
+## 质量承�
 
 - 📚 基于真实案例数据（所有案例标注时间戳）
 - 🎯 结构化风险评估（1-5分量化）
