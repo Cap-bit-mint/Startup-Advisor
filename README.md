@@ -108,9 +108,11 @@ openclaw skill import https://github.com/Cap-bit-mint/Startup-Advisor/raw/main/a
   - 验证内容创作者的真实痛点
   - 明确与ChatGPT/Jasper的差异化
 - **相关案例**（匹配维度：产品类型+目标用户）:
-  - [Jasper AI](https://www.loot-drop.io/) - AI写作工具失败案例（产品类型+目标用户匹配）
-  - [Sudowrite](https://www.loot-drop.io/) - 订阅制AI写作工具（商业模式+核心功能匹配）
-  - [Copy.ai](https://www.loot-drop.io/) - 内容生成SaaS（目标用户+定价模式匹配）
+  - 待补充AI写作工具类失败案例
+
+**注**：由于 loot-drop.io 当前库中暂无AI写作工具类案例，建议：
+  1. 可参考 [Quibi](https://www.loot-drop.io/startup/1891-quibi)（竞争+时机案例）
+  2. 关注 AI 内容生成赛道的独特风险：模型迭代、版权争议、用户留存
 
 ---
 

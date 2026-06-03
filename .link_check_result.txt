@@ -1,0 +1,2 @@
+有效链接: [('Quibi', 'https://www.loot-drop.io/startup/1891-quibi'), ('WeWork', 'https://www.loot-drop.io/startup/2035-wework'), ('Fab.com', 'https://www.loot-drop.io/startup/2171-fabcom'), ('Homejoy', 'https://www.loot-drop.io/startup/2189-homejoy'), ('Plenty Unlimited', 'https://www.loot-drop.io/startup/2563-plenty-unlimited')]
+无效链接: []
