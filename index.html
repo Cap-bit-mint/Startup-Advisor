@@ -17,11 +17,11 @@
         .filters { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1); }
         .filters h3 { margin-bottom: 15px; }
         .filter-row { display: flex; gap: 15px; flex-wrap: wrap; }
-        select { padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #1a1a2e; color: #fff; min-width: 150px; }
-        input { padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #1a1a2e; color: #fff; min-width: 200px; }
+        select, input { padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #1a1a2e; color: #fff; min-width: 150px; }
+        input { min-width: 200px; }
         .cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
         .case-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.3s; }
-        .case-card:hover { border-color: #64ffda; transform: translateY(-3px); }
+        .case-card:hover { border-color: #64ffda; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(100,255,218,0.15); }
         .case-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .case-name { font-size: 1.1rem; font-weight: 700; }
         .case-id { font-size: 0.75rem; color: #8892b0; }
@@ -29,13 +29,30 @@
         .case-burn { font-size: 0.9rem; color: #e94560; margin-bottom: 8px; }
         .case-analysis { font-size: 0.85rem; color: #8892b0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .loading { text-align: center; padding: 40px; color: #8892b0; }
+        
+        /* 模态框 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.show { display: flex; }
+        .modal-content { background: #16213e; border-radius: 16px; max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-title { font-size: 1.5rem; font-weight: 700; }
+        .modal-close { background: none; border: none; color: #8892b0; font-size: 1.5rem; cursor: pointer; padding: 5px 10px; }
+        .modal-close:hover { color: #fff; }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section h4 { color: #64ffda; margin-bottom: 10px; font-size: 1rem; }
+        .modal-section p { color: #ccd6f6; line-height: 1.6; }
+        .modal-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .meta-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; }
+        .meta-label { font-size: 0.75rem; color: #8892b0; margin-bottom: 4px; }
+        .meta-value { font-size: 1rem; font-weight: 600; }
+        
         @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Startup-Advisor 案例数据库</h1>
-        <p class="subtitle">基于 loot-drop.io 的失败创业公司案例分析</p>
+        <p class="subtitle">基于 loot-drop.io 的失败创业公司案例分析 | 共 1268 个案例</p>
         
         <div class="stats">
             <div class="stat-card"><div class="stat-value" id="totalCases">-</div><div class="stat-label">案例总数</div></div>
@@ -47,7 +64,7 @@
         <div class="filters">
             <h3>🔍 筛选案例</h3>
             <div class="filter-row">
-                <input type="text" id="searchInput" placeholder="搜索公司名��..." oninput="filterCases()">
+                <input type="text" id="searchInput" placeholder="搜索公司名..." oninput="filterCases()">
                 <select id="sectorFilter" onchange="filterCases()"><option value="">全部行业</option></select>
                 <select id="hasAnalysisFilter" onchange="filterCases()"><option value="">全部</option><option value="yes">含深度分析</option></select>
             </div>
@@ -55,6 +72,17 @@
         
         <div id="casesGrid" class="cases-grid"></div>
         <div id="loading" class="loading">加载中...</div>
+    </div>
+    
+    <!-- 详情模态框 -->
+    <div class="modal" id="caseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">案例详情</div>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
     </div>
 
     <script>
@@ -109,7 +137,7 @@
         
         const grid = document.getElementById('casesGrid');
         grid.innerHTML = filtered.slice(0, 100).map(c => `
-            <div class="case-card">
+            <div class="case-card" onclick="showCaseDetail(${c.id})">
                 <div class="case-header">
                     <div>
                         <div class="case-name">${c.name || 'N/A'}</div>
@@ -118,7 +146,7 @@
                 </div>
                 ${c.sector ? `<div class="case-sector">${c.sector}</div>` : ''}
                 ${c.total_cash_burned ? `<div class="case-burn">💸 ${c.total_cash_burned}</div>` : ''}
-                ${c.failure_analysis ? `<div class="case-analysis">${c.failure_analysis.slice(0, 200)}...</div>` : ''}
+                ${c.failure_analysis ? `<div class="case-analysis">${c.failure_analysis?.slice(0, 200)}...</div>` : ''}
             </div>
         `).join('');
         
@@ -126,6 +154,73 @@
             grid.innerHTML += `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#8892b0;">显示前100个结果，共 ${filtered.length} 个</div>`;
         }
     }
+
+    function showCaseDetail(id) {
+        const c = allCases.find(x => x.id === id);
+        if (!c) return;
+        
+        document.getElementById('modalTitle').textContent = c.name || '案例详情';
+        document.getElementById('modalBody').innerHTML = `
+            <div class="modal-meta">
+                ${c.sector ? `<div class="meta-item"><div class="meta-label">行业</div><div class="meta-value">${c.sector}</div></div>` : ''}
+                ${c.total_cash_burned ? `<div class="meta-item"><div class="meta-label">烧钱总额</div><div class="meta-value">${c.total_cash_burned}</div></div>` : ''}
+                ${c.founding_year ? `<div class="meta-item"><div class="meta-label">成立年份</div><div class="meta-value">${c.founding_year}</div></div>` : ''}
+                ${c.end_year ? `<div class="meta-item"><div class="meta-label">倒闭年份</div><div class="meta-value">${c.end_year}</div></div>` : ''}
+            </div>
+            
+            ${c.failure_analysis ? `
+            <div class="modal-section">
+                <h4>📉 失败分析</h4>
+                <p>${c.failure_analysis}</p>
+            </div>` : ''}
+            
+            ${c.market_analysis ? `
+            <div class="modal-section">
+                <h4>📊 市场分析</h4>
+                <p>${c.market_analysis}</p>
+            </div>` : ''}
+            
+            ${c.startup_learnings ? `
+            <div class="modal-section">
+                <h4>📚 创业教训</h4>
+                <p>${c.startup_learnings}</p>
+            </div>` : ''}
+            
+            ${c.scalability ? `
+            <div class="modal-section">
+                <h4>📈 可扩展性</h4>
+                <p>${c.scalability}</p>
+            </div>` : ''}
+            
+            ${c.pivot_concept ? `
+            <div class="modal-section">
+                <h4>🔄 转型建议</h4>
+                <p>${c.pivot_concept}</p>
+            </div>` : ''}
+            
+            ${c.description ? `
+            <div class="modal-section">
+                <h4>📝 描述</h4>
+                <p>${c.description}</p>
+            </div>` : ''}
+        `;
+        
+        document.getElementById('caseModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('caseModal').classList.remove('show');
+    }
+
+    // 点击背景关闭
+    document.getElementById('caseModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+    
+    // ESC 关闭
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
     </script>
 </body>
 </html>
