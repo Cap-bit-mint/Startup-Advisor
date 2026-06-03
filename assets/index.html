@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup-Advisor 可视化工具</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <style>
+        /* 入口页专属样式 */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 { font-size: 2rem; }
+        }
+        
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .tool-card:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .tool-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .tool-card h3 {
+            margin-bottom: 10px;
+        }
+        
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .tool-card .badge {
+            margin-top: 15px;
+        }
+        
+        /* Tab 内容区 */
+        .tab-view {
+            display: none;
+        }
+        
+        .tab-view.active {
+            display: block;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-accent);
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Skill 集成状态 */
+        .skill-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .skill-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-success);
+        }
+        
+        .skill-status.disconnected .dot {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 主视图：工具选择 -->
+        <div id="mainView" class="active">
+            <div class="hero">
+                <h1 class="title-gradient-accent">Startup-Advisor</h1>
+                <p class="subtitle">基于失败案例的创业决策辅助可视化工具</p>
+            </div>
+            
+            <div class="tool-grid">
+                <a href="?tool=matrix" class="tool-card" data-tool="matrix">
+                    <div class="icon">📊</div>
+                    <h3>失败矩阵</h3>
+                    <p>24种失败模式 × 5个阶段热力图</p>
+                    <span class="badge badge-primary">交互式</span>
+                </a>
+                
+                <a href="?tool=decision" class="tool-card" data-tool="decision">
+                    <div class="icon">🌲</div>
+                    <h3>决策树</h3>
+                    <p>交互式决策流程 + 自测问卷</p>
+                    <span class="badge badge-success">AI辅助</span>
+                </a>
+                
+                <a href="?tool=assessment" class="tool-card" data-tool="assessment">
+                    <div class="icon">⚠️</div>
+                    <h3>风险评估</h3>
+                    <p>5维度风险自评 + 建议生成</p>
+                    <span class="badge badge-warning">智能</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Tab 视图：工具详情 -->
+        <div id="tabView" class="tab-view">
+            <a href="?" class="back-link">← 返回工具选择</a>
+            
+            <div class="tabs" id="mainTabs">
+                <button class="tab active" onclick="switchTab('matrixTab')">📊 失败矩阵</button>
+                <button class="tab" onclick="switchTab('decisionTab')">🌲 决策树</button>
+                <button class="tab" onclick="switchTab('assessmentTab')">⚠️ 风险评估</button>
+            </div>
+            
+            <div id="matrixTab" class="tab-content active">
+                <iframe src="pages/matrix.html" id="matrixFrame" style="width:100%; min-height:600px; border:none;"></iframe>
+            </div>
+            
+            <div id="decisionTab" class="tab-content">
+                <iframe src="pages/decision.html" id="decisionFrame" style="width:100%; min-height:600px; border:none;"></iframe>
+            </div>
+            
+            <div id="assessmentTab" class="tab-content">
+                <iframe src="pages/assessment.html" id="assessmentFrame" style="width:100%; min-height:600px; border:none;"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Skill 集成状态 -->
+    <div class="skill-status" id="skillStatus">
+        <span class="dot"></span>
+        <span>Skill 连接状态</span>
+    </div>
+    
+    <script src="js/data.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tool = params.get('tool');
+            const embed = params.get('embed');
+            
+            // 如果是嵌入模式，隐藏返回链接
+            if (embed === 'true') {
+                document.querySelector('.back-link')?.remove();
+                document.getElementById('skillStatus').style.display = 'none';
+            }
+            
+            // 根据参数显示对应工具
+            if (tool) {
+                showToolView(tool);
+            }
+            
+            // 初始化 Skill API
+            if (typeof SkillAPI !== 'undefined') {
+                SkillAPI.init();
+            }
+        });
+        
+        // 显示工具视图
+        function showToolView(tool) {
+            document.getElementById('mainView').style.display = 'none';
+            document.getElementById('tabView').style.display = 'block';
+            
+            // 激活对应 Tab
+            switch (tool) {
+                case 'matrix':
+                    switchTab('matrixTab');
+                    break;
+                case 'decision':
+                    switchTab('decisionTab');
+                    break;
+                case 'assessment':
+                    switchTab('assessmentTab');
+                    break;
+            }
+        }
+        
+        // Tab 切换
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            const tab = document.querySelector(`[onclick="switchTab('${tabId}')"]`);
+            if (tab) tab.classList.add('active');
+            
+            const content = document.getElementById(tabId);
+            if (content) content.classList.add('active');
+        }
+        
+        // Skill 消息处理
+        window.addEventListener('message', (event) => {
+            const message = event.data;
+            
+            // 监听子 iframe 消息
+            if (message.source === 'startup-advisor-visualization') {
+                handleVisualizationMessage(message);
+            }
+        });
+        
+        function handleVisualizationMessage(message) {
+            const { type, data } = message;
+            
+            switch (type) {
+                case 'skill:ready':
+                    updateSkillStatus(true);
+                    break;
+                    
+                case 'skill:result':
+                    // 处理分析结果
+                    console.log('收到分析结果:', data);
+                    break;
+            }
+        }
+        
+        function updateSkillStatus(connected) {
+            const status = document.getElementById('skillStatus');
+            if (connected) {
+                status.classList.remove('disconnected');
+                status.querySelector('span:last-child').textContent = 'Skill 已连接';
+            } else {
+                status.classList.add('disconnected');
+                status.querySelector('span:last-child').textContent = 'Skill 未连接';
+            }
+        }
+    </script>
+</body>
+</html>
