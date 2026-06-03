@@ -2,6 +2,7 @@
   "cases": [
     {
       "id": "2035-wework",
+      "loot_url": "https://www.loot-drop.io/startup/2035-wework",
       "name": "WeWork",
       "sector": "Real Estate / PropTech",
       "product_type": "Marketplace",
@@ -28,14 +29,15 @@
       
       "pivot_concept": "A sustainable version of WeWork would focus on profitability over growth, operate in select high-demand markets, and be transparent about being a real estate technology company rather than a tech company.",
       
-      "relevance_tags": ["real-estate", "marketplace", "unicorn", "ipo-failure", "governance"],
-      "similar_cases": ["1813-quibi", "2156-gotv", "2572-techspace"]
+      "related_patterns": ["financing-1", "team-3", "operation-1"],
+      "relevance_tags": ["real-estate", "marketplace", "unicorn", "ipo-failure", "governance"]
     },
     {
       "id": "1891-quibi",
+      "loot_url": "https://www.loot-drop.io/startup/1891-quibi",
       "name": "Quibi",
       "sector": "Entertainment / Streaming",
-      "product_type": "Mobile Video Platform",
+      "product_type": "Mobile App",
       "founding_year": 2018,
       "end_year": 2020,
       "total_cash_burned": "$1.75B",
@@ -59,42 +61,140 @@
       
       "pivot_concept": "A successful mobile video platform would need either viral free content (like TikTok), a unique format that can't be replicated, or a proven content library before launch.",
       
-      "relevance_tags": ["streaming", "mobile", "content", "pandemic", "subscription"],
-      "similar_cases": ["2035-wework", "1912-hulu", "2201-newtube"]
+      "related_patterns": ["market-2", "product-1", "financing-2"],
+      "relevance_tags": ["streaming", "mobile", "content", "pandemic", "subscription"]
     },
     {
-      "id": "2171-fabcom",
-      "name": "Fab.com",
-      "sector": "E-commerce / Design",
-      "product_type": "Flash Sales Platform",
-      "founding_year": 2011,
-      "end_year": 2015,
-      "total_cash_burned": "$336M",
-      "funding_raised": "$336M",
-      "valuation_peak": "$1.0B",
+      "id": "1-juicero",
+      "loot_url": null,
+      "name": "Juicero",
+      "sector": "Consumer / Hardware",
+      "product_type": "Smart Appliance",
+      "founding_year": 2013,
+      "end_year": 2017,
+      "total_cash_burned": "$118.5M",
+      "funding_raised": "$118.5M",
+      "valuation_peak": "$420M",
       "status": "failed",
       
-      "failure_analysis": "Fab.com pivoted too many times and lost focus. Started as a social network for designers, pivoted to flash sales, then to e-commerce, then to home goods. Each pivot burned more cash and alienated existing users. The $1.1B acquisition attempt and subsequent layoffs signaled the end.",
+      "failure_analysis": "Juicero built a $699 machine to squeeze juice packs when users could squeeze them by hand. The technology was solving a non-problem. Bloomberg exposed that the product was unnecessary, and users abandoned it immediately. The entire premise of 'professional pressing' was a false demand.",
       
-      "market_analysis": "The flash sales model had inherent issues: low margins, inventory risk, and no loyalty. As competitors emerged, differentiation vanished. The shift to home goods required completely different supply chain expertise.",
+      "market_analysis": "The cold-press juice market existed but didn't need expensive hardware. Users were content with cheaper alternatives like manual squeezing or simple juicers. The premium positioning couldn't justify a 100x price premium over alternatives.",
       
       "startup_learnings": [
-        "Pivots should be strategic, not desperate",
-        "Inventory-based businesses have thin margins",
-        "Acquisition attempts can destroy company culture",
-        "User loyalty requires consistent value proposition",
-        "Cash preservation is critical for e-commerce"
+        "Build an MVP before a $699 product—test with bags first",
+        "Technology should solve real problems, not create new ones",
+        "Hardware margins require massive scale or premium pricing",
+        "Media can kill a product with one investigation",
+        "Verify demand with cheap solutions before expensive ones"
       ],
       
-      "scalability": "E-commerce flash sales scale with inventory and marketing spend. Fab's high marketing costs (reportedly 40% of revenue) meant scale didn't improve unit economics. The model required constant new customers.",
+      "scalability": "Hardware businesses require supply chain, manufacturing, and inventory management. The $699 price point limited the addressable market, while the BOM cost was too high to enable typical hardware margin structures.",
       
-      "pivot_concept": "A sustainable flash sales model would need exclusive products, better margins, and a loyal customer base built before aggressive expansion.",
+      "pivot_concept": "A successful juice business would focus on the product (juice quality) rather than unnecessary technology, or target the professional market where the price premium makes sense.",
       
-      "relevance_tags": ["ecommerce", "flash-sales", "pivot", "design", "inventory"],
-      "similar_cases": ["2201-gilt", "2099-onekingslane", "2001-pets"]
+      "related_patterns": ["market-1", "product-1", "financing-1"],
+      "relevance_tags": ["hardware", "consumer", "pseudo-demand", "media-kill"]
     },
     {
-      "id": "2189-homejoy",
+      "id": "2-theranos",
+      "loot_url": null,
+      "name": "Theranos",
+      "sector": "Healthcare / Biotech",
+      "product_type": "Medical Device",
+      "founding_year": 2003,
+      "end_year": 2018,
+      "total_cash_burned": "$700M+",
+      "funding_raised": "$700M+",
+      "valuation_peak": "$9B",
+      "status": "failed",
+      
+      "failure_analysis": "Theranos claimed to have revolutionary blood testing technology that could run dozens of tests from a single finger prick. The technology never worked. Founder Elizabeth Holmes committed fraud, falsifying results and deceiving investors, patients, and regulators. The company was shut down, Holmes was convicted of fraud.",
+      
+      "market_analysis": "The blood testing market was dominated by established players like Quest and LabCorp. Theranos claimed to disrupt with cheaper, faster testing, but the technology was scientifically impossible at the claimed level of accuracy.",
+      
+      "startup_learnings": [
+        "Technology must actually work before claiming it does",
+        "Healthcare regulation exists for patient safety",
+        "Integrity is non-negotiable in biotech",
+        "Scientific claims require peer review and validation",
+        "Whistleblowers will eventually expose fraud"
+      ],
+      
+      "scalability": "Medical devices require FDA approval and extensive clinical validation. Theranos tried to bypass these requirements, which ultimately led to regulatory action.",
+      
+      "pivot_concept": "A legitimate blood testing startup would focus on specific tests that work, obtain proper regulatory approval, and validate claims with clinical evidence.",
+      
+      "related_patterns": ["market-1", "product-1", "team-3"],
+      "relevance_tags": ["healthcare", "fraud", "regulation", "biotech"]
+    },
+    {
+      "id": "3-pets",
+      "loot_url": null,
+      "name": "Pets.com",
+      "sector": "E-commerce",
+      "product_type": "Online Retail",
+      "founding_year": 1999,
+      "end_year": 2000,
+      "total_cash_burned": "$300M",
+      "funding_raised": "$300M",
+      "valuation_peak": "$268M",
+      "status": "failed",
+      
+      "failure_analysis": "Pets.com failed due to unit economics disaster. The business model was fundamentally broken: shipping heavy bags of pet food across the country at low prices couldn't work. The cost of shipping exceeded the revenue from sales. High marketing costs to acquire customers combined with negative margins on every transaction led to rapid collapse.",
+      
+      "market_analysis": "The online pet supplies market existed but wasn't ready for pure e-commerce in 1999-2000. Logistics costs were too high, and consumers weren't yet comfortable buying pet food online when they could get it cheaper at local stores.",
+      
+      "startup_learnings": [
+        "Unit economics must work before scaling",
+        "Heavy products with low margins don't suit e-commerce",
+        "Marketing costs must be weighed against customer lifetime value",
+        "Dot-com era valuations ignored fundamentals",
+        "Logistics costs can destroy e-commerce businesses"
+      ],
+      
+      "scalability": "E-commerce for heavy, low-margin goods requires either massive volume to spread fixed costs or premium pricing to cover logistics. Pets.com had neither.",
+      
+      "pivot_concept": "A successful pet e-commerce would focus on higher-margin items like toys and accessories, or partner with local stores for fulfillment.",
+      
+      "related_patterns": ["operation-1", "market-1", "financing-1"],
+      "relevance_tags": ["ecommerce", "pets", "dot-com", "unit-economics"]
+    },
+    {
+      "id": "4-webvan",
+      "loot_url": null,
+      "name": "Webvan",
+      "sector": "E-commerce / Logistics",
+      "product_type": "Online Grocery",
+      "founding_year": 1996,
+      "end_year": 2001,
+      "total_cash_burned": "$800M",
+      "funding_raised": "$800M",
+      "valuation_peak": "$1.2B",
+      "status": "failed",
+      
+      "failure_analysis": "Webvan expanded too fast before validating its business model. The company built massive distribution centers before proving customers would use the service. High infrastructure costs combined with low initial adoption led to per-order losses. The dot-com crash finished what bad unit economics started.",
+      
+      "market_analysis": "Online grocery was ahead of its time in the 1990s. Consumer adoption was slow, and the infrastructure investments required were too large for the available market size.",
+      
+      "startup_learnings": [
+        "Don't build infrastructure before validating demand",
+        "Premature scaling kills startups",
+        "Market timing matters as much as market size",
+        "Unit economics must work at small scale before expanding",
+        "Dot-com boom masked fundamental business flaws"
+      ],
+      
+      "scalability": "Grocery delivery requires expensive warehouse infrastructure, temperature-controlled storage, and local delivery networks. The fixed costs are enormous before the first customer is served.",
+      
+      "pivot_concept": "A successful version would validate in one market first, prove unit economics, then expand methodically with proven logistics.",
+      
+      "related_patterns": ["operation-3", "market-2", "financing-1"],
+      "relevance_tags": ["ecommerce", "grocery", "dot-com", "premature-scaling"]
+    },
+    {
+      "id": "5-homejoy",
+      "loot_url": "https://www.loot-drop.io/startup/2189-homejoy",
       "name": "Homejoy",
       "sector": "On-Demand Services",
       "product_type": "Home Services Marketplace",
@@ -105,9 +205,9 @@
       "valuation_peak": "$500M",
       "status": "failed",
       
-      "failure_analysis": "Homejoy faced 'gig economy' legal challenges similar to Uber. California labor regulators sued over worker classification (employee vs. contractor). The core business model—relying on contractors to perform services—was legally vulnerable. Combined with fierce competition from Handy, Homejoy couldn't survive.",
+      "failure_analysis": "Homejoy faced 'gig economy' legal challenges. California labor regulators sued over worker classification (employee vs. contractor). The core business model—relying on contractors—was legally vulnerable. Combined with competition from Handy (which raised $1B), Homejoy couldn't survive.",
       
-      "market_analysis": "The home cleaning market was fragmented and price-sensitive. Homejoy's model required high volume and low prices, creating razor-thin margins. Competition from Handy (which raised $1B) made the market untenable for a smaller player.",
+      "market_analysis": "The home cleaning market was fragmented and price-sensitive. Homejoy's model required high volume and low prices, creating razor-thin margins. Competition from well-funded rivals made the market untenable.",
       
       "startup_learnings": [
         "Legal and regulatory risks must be assessed early",
@@ -117,49 +217,271 @@
         "Competition from well-funded rivals is existential for small players"
       ],
       
-      "scalability": "Home services require local operations, quality control, and supply-side management. Each city requires significant investment before profitability. The model doesn't benefit from typical software scaling advantages.",
+      "scalability": "Home services require local operations, quality control, and supply-side management. Each city requires significant investment before profitability.",
       
-      "pivot_concept": "A successful version might focus on premium, high-margin services, employ workers directly, or target markets with clearer regulatory frameworks.",
+      "pivot_concept": "A successful version might focus on premium services, employ workers directly in compliant markets, or target markets with clearer regulatory frameworks.",
       
-      "relevance_tags": ["gig-economy", "home-services", "legal-risk", "contractor", "marketplace"],
-      "similar_cases": ["2099-handy", "2101-taskrabbit", "2201-instacart"]
+      "related_patterns": ["team-1", "financing-1", "operation-2"],
+      "relevance_tags": ["gig-economy", "home-services", "legal-risk", "contractor"]
     },
     {
-      "id": "2563-plenty-unlimited",
-      "name": "Plenty Unlimited",
-      "sector": "Agriculture / PropTech",
-      "product_type": "Indoor Farming Technology",
-      "founding_year": 2014,
-      "end_year": 2023,
-      "total_cash_burned": "$900M",
-      "funding_raised": "$900M",
-      "valuation_peak": "$2.3B",
+      "id": "6-vine",
+      "loot_url": null,
+      "name": "Vine",
+      "sector": "Social Media",
+      "product_type": "Short Video Platform",
+      "founding_year": 2012,
+      "end_year": 2017,
+      "total_cash_burned": "$30M",
+      "funding_raised": "$30M (acquired)",
+      "valuation_peak": "$30M (acquisition)",
       "status": "failed",
       
-      "failure_analysis": "Despite high-profile backers (Jeff Bezos, SoftBank), Plenty failed to achieve promised yields and scale. The technology worked in labs but struggled in commercial production. High energy costs, crop failures, and inability to meet grocery store volume requirements led to shutdown.",
+      "failure_analysis": "Vine was killed by Twitter's neglect. After acquiring Vine for $30M, Twitter failed to invest in development or monetization. Meanwhile, Instagram Video and Snapchat launched superior products. Vine's founders left, the product stagnated, and users migrated to better alternatives.",
       
-      "market_analysis": "Indoor farming promised pesticide-free, local produce with consistent yields. However, the economics were brutal: energy costs for LED lighting, climate control, and water systems were far higher than traditional agriculture. Grocery stores demanded volumes and prices indoor farms couldn't deliver.",
+      "market_analysis": "The short video market was real and growing. Vine had first-mover advantage but failed to capitalize on it. Competitors with better resources and faster iteration overtook the pioneer.",
       
       "startup_learnings": [
-        "Lab results ≠ commercial viability",
-        "Energy-intensive businesses face margin pressure",
-        "Enterprise sales require meeting customer specs, not just promises",
-        "Deep tech requires longer timelines and more capital",
-        "High valuations based on future promises are risky"
+        "Being acquired doesn't guarantee continued investment",
+        "First-mover advantage requires continued innovation",
+        "Monetization and creator tools are essential for platforms",
+        "Technical debt can kill products",
+        "Leadership stability matters for long-term success"
       ],
       
-      "scalability": "Indoor farming requires purpose-built facilities with massive energy infrastructure. Each farm is essentially custom construction, limiting typical startup scaling advantages. Technology improvements don't translate linearly to cost reductions.",
+      "scalability": "Video platforms require significant infrastructure investment and continuous product development. Without parent company support, Vine couldn't keep pace with better-funded competitors.",
       
-      "pivot_concept": "A sustainable indoor farming model would need breakthroughs in energy efficiency, focus on high-value crops, or position as a premium niche rather than grocery store volume supplier.",
+      "pivot_concept": "A successful short video platform would need continuous investment, creator monetization tools, and differentiation from competitors from day one.",
       
-      "relevance_tags": ["agritech", "indoor-farming", "deep-tech", "energy", "softbank"],
-      "similar_cases": ["2561-bowery-farming", "2562-aeroFarms", "2564-iron-ox"]
+      "related_patterns": ["product-2", "market-3", "team-2"],
+      "relevance_tags": ["social-media", "video", "acquisition", "neglect"]
+    },
+    {
+      "id": "7-jawbone",
+      "loot_url": null,
+      "name": "Jawbone",
+      "sector": "Hardware / Wearables",
+      "product_type": "Fitness Tracker",
+      "founding_year": 1997,
+      "end_year": 2017,
+      "total_cash_burned": "$1.3B",
+      "funding_raised": "$1.3B",
+      "valuation_peak": "$3.3B",
+      "status": "failed",
+      
+      "failure_analysis": "Jawbone faced perfect storm: Apple Watch launch hurt the entire fitness tracker market, a supplier dispute left it without products to sell, and legal battles consumed management attention. The company couldn't recover from multiple simultaneous crises.",
+      
+      "market_analysis": "The fitness tracker market was disrupted by Apple Watch. Jawbone's premium positioning couldn't compete with Apple's ecosystem advantage and brand power.",
+      
+      "startup_learnings": [
+        "Hardware companies face supply chain risks",
+        "Single-supplier dependencies are dangerous",
+        "Competition from tech giants can destroy niche players",
+        "Legal disputes can be existential for small companies",
+        "Consumer hardware requires massive scale for profitability"
+      ],
+      
+      "scalability": "Hardware companies need working capital for inventory, reliable suppliers, and manufacturing capacity. Jawbone's legal and supply issues disrupted all of these.",
+      
+      "pivot_concept": "A successful fitness wearable would either target a niche Apple doesn't serve or differentiate on specific use cases (medical, industrial) where Apple isn't focused.",
+      
+      "related_patterns": ["operation-2", "market-3", "financing-1"],
+      "relevance_tags": ["hardware", "wearables", "supply-chain", "apple"]
+    },
+    {
+      "id": "8-secret",
+      "loot_url": null,
+      "name": "Secret",
+      "sector": "Social Media",
+      "product_type": "Anonymous Social",
+      "founding_year": 2014,
+      "end_year": 2015,
+      "total_cash_burned": "$35M",
+      "funding_raised": "$35M",
+      "valuation_peak": "$100M",
+      "status": "failed",
+      
+      "failure_analysis": "Anonymous social apps inevitably become toxic. Without accountability, users post Mean Girls behavior, harassment, and rumors. Secret failed to create a healthy anonymous community, and users fled to platforms with better content.",
+      
+      "market_analysis": "The anonymous social market existed but was poisoned by its nature. Users wanted authentic connections, not anonymous attacks. The platforms that survived focused on identity.",
+      
+      "startup_learnings": [
+        "Anonymous platforms struggle with content moderation",
+        "Community health requires active governance",
+        "Toxicity drives away normal users",
+        "Network effects can turn negative quickly",
+        "Anonymous != unmoderated"
+      ],
+      
+      "scalability": "Content moderation at scale requires AI and human review. Anonymous platforms make this harder because bad actors can't be banned by identity.",
+      
+      "pivot_concept": "A successful anonymous platform would need strong content moderation, clear community guidelines, and mechanisms to surface positive anonymous sharing.",
+      
+      "related_patterns": ["product-1", "team-3", "operation-2"],
+      "relevance_tags": ["social-media", "anonymous", "community", "toxicity"]
+    },
+    {
+      "id": "9-color",
+      "loot_url": null,
+      "name": "Color Labs",
+      "sector": "Social Media",
+      "product_type": "Photo Sharing",
+      "founding_year": 2010,
+      "end_year": 2012,
+      "total_cash_burned": "$41M",
+      "funding_raised": "$41M",
+      "valuation_peak": "$170M",
+      "status": "failed",
+      
+      "failure_analysis": "Color launched with $41M but no clear product vision. The app tried to do too many things (location-based photo sharing, social graphs) without excelling at any. Users couldn't understand what problem it solved. The product pivoted multiple times but never found product-market fit.",
+      
+      "market_analysis": "Photo sharing existed but the location-based social graph was novel. However, users weren't ready for automatic social graph creation based on proximity.",
+      
+      "startup_learnings": [
+        "Clear product vision is essential before massive fundraising",
+        "Pivoting without focus loses users",
+        "Users need to understand what problem you solve",
+        "Feature overload kills products",
+        "Venture scale funding doesn't guarantee product-market fit"
+      ],
+      
+      "scalability": "Building infrastructure for a social platform requires massive investment, but the product must work before scaling.",
+      
+      "pivot_concept": "A successful photo sharing app would focus on one specific use case (e.g., event photos, family sharing) and do it extremely well.",
+      
+      "related_patterns": ["market-1", "product-1", "financing-1"],
+      "relevance_tags": ["social-media", "photos", "pivot", "feature-overload"]
+    },
+    {
+      "id": "10-yikyak",
+      "loot_url": null,
+      "name": "Yik Yak",
+      "sector": "Social Media",
+      "product_type": "Anonymous Campus Chat",
+      "founding_year": 2013,
+      "end_year": 2017,
+      "total_cash_burned": "$73M",
+      "funding_raised": "$73M",
+      "valuation_peak": "$400M",
+      "status": "failed",
+      
+      "failure_analysis": "Yik Yak was anonymous by design, which led to rampant cyberbullying, threats, and harassment. The company faced lawsuits, university bans, and couldn't moderate content at scale. Despite attempts to add moderation, the damage to brand and user trust was fatal.",
+      
+      "market_analysis": "Campus anonymous chat had potential but anonymity created insurmountable moderation challenges. Universities banned the app citing safety concerns.",
+      
+      "startup_learnings": [
+        "Anonymity can enable harmful behavior",
+        "Content moderation at scale is extremely difficult",
+        "University relationships require trust and safety",
+        "Legal liability for platform content is real",
+        "Community governance must be built in from day one"
+      ],
+      
+      "scalability": "Anonymous platforms face exponential moderation challenges as they scale. The same features that enable honest sharing also enable harassment.",
+      
+      "pivot_concept": "A successful campus social platform would require identity verification, community guidelines, and strong moderation tools from launch.",
+      
+      "related_patterns": ["product-1", "team-3", "operation-2"],
+      "relevance_tags": ["social-media", "anonymous", "campus", "moderation"]
+    },
+    {
+      "id": "11-pebble",
+      "loot_url": null,
+      "name": "Pebble",
+      "sector": "Hardware / Wearables",
+      "product_type": "Smartwatch",
+      "founding_year": 2012,
+      "end_year": 2016,
+      "total_cash_burned": "$43M",
+      "funding_raised": "$43M",
+      "valuation_peak": "$740M",
+      "status": "failed",
+      
+      "failure_analysis": "Pebble ran out of cash after burning through Kickstarter funds and venture capital. The smartwatch market became dominated by Apple and Samsung with massive R&D budgets. Pebble couldn't compete on features or ecosystem while maintaining profitability.",
+      
+      "market_analysis": "The smartwatch market proved to be an Apple/Samsung battle. Smaller players without smartphone ecosystems couldn't compete on features or developer ecosystems.",
+      
+      "startup_learnings": [
+        "Hardware requires more capital than expected",
+        "Competing with Apple requires ecosystem advantages",
+        "Kickstarter funding has a ceiling",
+        "Developer ecosystems take years to build",
+        "Platform businesses need massive scale"
+      ],
+      
+      "scalability": "Smartwatch businesses require huge R&D investment, supply chain management, and software platform development. Only companies with smartphone ecosystems can compete long-term.",
+      
+      "pivot_concept": "A successful smartwatch would target a niche use case (fitness tracking, industrial, medical) where Apple isn't focused, or become a components supplier.",
+      
+      "related_patterns": ["financing-1", "market-3", "operation-1"],
+      "relevance_tags": ["hardware", "wearables", "apple", "kickstarter"]
+    },
+    {
+      "id": "12-google-glass",
+      "loot_url": null,
+      "name": "Google Glass",
+      "sector": "Hardware / AR",
+      "product_type": "Wearable AR",
+      "founding_year": 2012,
+      "end_year": 2015,
+      "status": "failed",
+      
+      "failure_analysis": "Google Glass was too early and socially awkward. The 'Explorer Edition' faced privacy backlash, high prices, and limited functionality. Google halted consumer sales and eventually killed the program before a proper consumer launch.",
+      
+      "market_analysis": "AR glasses were 10+ years ahead of consumer readiness. The technology existed but social acceptance, battery life, and use cases weren't ready for mainstream.",
+      
+      "startup_learnings": [
+        "Technology can be too early for the market",
+        "Social acceptability matters as much as technical feasibility",
+        "Privacy concerns can kill products",
+        "Price points must match consumer value",
+        "Developer ecosystems require critical mass"
+      ],
+      
+      "scalability": "Consumer AR glasses require miniaturization, battery improvements, and content ecosystems that don't exist yet at consumer price points.",
+      
+      "pivot_concept": "Enterprise AR glasses found success where privacy concerns are lower and specific use cases (warehouse, medical, industrial) justify the price.",
+      
+      "related_patterns": ["market-2", "product-1", "team-3"],
+      "relevance_tags": ["ar", "wearables", "privacy", "enterprise"]
+    },
+    {
+      "id": "13-ftx",
+      "loot_url": null,
+      "name": "FTX",
+      "sector": "Fintech / Crypto",
+      "product_type": "Cryptocurrency Exchange",
+      "founding_year": 2019,
+      "end_year": 2022,
+      "total_cash_burned": "$1.8B",
+      "funding_raised": "$1.8B",
+      "valuation_peak": "$32B",
+      "status": "failed",
+      
+      "failure_analysis": "FTX collapsed due to fraud and mismanagement. Founder Sam Bankman-Fried used customer funds for risky trades through Alameda Research. When the crypto winter hit, withdrawals exposed the fraud, leading to bankruptcy and criminal charges.",
+      
+      "market_analysis": "The crypto exchange market was real but FTX's practices were fraudulent. Customer funds were misused, creating systemic risk that collapsed when markets turned.",
+      
+      "startup_learnings": [
+        "Customer funds must be segregated and protected",
+        "Financial services require proper risk management",
+        "Regulatory compliance isn't optional",
+        "Founder power without oversight creates fraud risk",
+        "Crypto winter exposes weak business models"
+      ],
+      
+      "scalability": "Crypto exchanges require regulatory compliance, proper custody solutions, and risk management. FTX's model was fundamentally flawed.",
+      
+      "pivot_concept": "A legitimate crypto exchange would focus on regulatory compliance, transparent operations, and customer asset protection from day one.",
+      
+      "related_patterns": ["market-1", "team-3", "financing-1"],
+      "relevance_tags": ["fintech", "crypto", "fraud", "regulation"]
     }
   ],
   "metadata": {
-    "total_count": 5,
+    "total_count": 14,
     "last_updated": "2026-06-04",
-    "sources": ["loot-drop.io", "public reports", "SEC filings"],
+    "sources": ["loot-drop.io", "public reports", "SEC filings", "TechCrunch", "Bloomberg"],
     "format_version": "1.0"
   }
 }
