@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup-Advisor 案例数据库</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #fff; min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; font-size: 2rem; margin-bottom: 10px; background: linear-gradient(90deg, #e94560, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { text-align: center; color: #8892b0; margin-bottom: 40px; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #64ffda; }
+        .stat-label { font-size: 0.85rem; color: #8892b0; margin-top: 5px; }
+        .filters { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .filters h3 { margin-bottom: 15px; }
+        .filter-row { display: flex; gap: 15px; flex-wrap: wrap; }
+        select { padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #1a1a2e; color: #fff; min-width: 150px; }
+        input { padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #1a1a2e; color: #fff; min-width: 200px; }
+        .cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .case-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.3s; }
+        .case-card:hover { border-color: #64ffda; transform: translateY(-3px); }
+        .case-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .case-name { font-size: 1.1rem; font-weight: 700; }
+        .case-id { font-size: 0.75rem; color: #8892b0; }
+        .case-sector { font-size: 0.85rem; color: #64ffda; margin-bottom: 8px; }
+        .case-burn { font-size: 0.9rem; color: #e94560; margin-bottom: 8px; }
+        .case-analysis { font-size: 0.85rem; color: #8892b0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .loading { text-align: center; padding: 40px; color: #8892b0; }
+        @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Startup-Advisor 案例数据库</h1>
+        <p class="subtitle">基于 loot-drop.io 的失败创业公司案例分析</p>
+        
+        <div class="stats">
+            <div class="stat-card"><div class="stat-value" id="totalCases">-</div><div class="stat-label">案例总数</div></div>
+            <div class="stat-card"><div class="stat-value" id="totalBurned">-</div><div class="stat-label">烧钱总额</div></div>
+            <div class="stat-card"><div class="stat-value" id="sectorCount">-</div><div class="stat-label">行业覆盖</div></div>
+            <div class="stat-card"><div class="stat-value" id="hasAnalysis">-</div><div class="stat-label">含深度分析</div></div>
+        </div>
+        
+        <div class="filters">
+            <h3>🔍 筛选案例</h3>
+            <div class="filter-row">
+                <input type="text" id="searchInput" placeholder="搜索公司名��..." oninput="filterCases()">
+                <select id="sectorFilter" onchange="filterCases()"><option value="">全部行业</option></select>
+                <select id="hasAnalysisFilter" onchange="filterCases()"><option value="">全部</option><option value="yes">含深度分析</option></select>
+            </div>
+        </div>
+        
+        <div id="casesGrid" class="cases-grid"></div>
+        <div id="loading" class="loading">加载中...</div>
+    </div>
+
+    <script>
+    let allCases = [];
+    
+    fetch('docs/data/cases.json')
+        .then(r => r.json())
+        .then(data => {
+            allCases = data.cases;
+            updateStats();
+            populateFilters();
+            filterCases();
+            document.getElementById('loading').style.display = 'none';
+        })
+        .catch(e => {
+            document.getElementById('loading').textContent = '加载失败: ' + e.message;
+        });
+
+    function updateStats() {
+        const totalBurned = allCases.reduce((sum, c) => {
+            const match = c.total_cash_burned?.match(/[\d.]+/);
+            return sum + (match ? parseFloat(match[0]) : 0);
+        }, 0);
+        
+        const burnedStr = totalBurned > 1000 ? `$${(totalBurned/1000).toFixed(1)}B` : `$${totalBurned.toFixed(0)}M`;
+        const sectors = [...new Set(allCases.map(c => c.sector).filter(Boolean))];
+        const withAnalysis = allCases.filter(c => c.failure_analysis || c.market_analysis).length;
+        
+        document.getElementById('totalCases').textContent = allCases.length;
+        document.getElementById('totalBurned').textContent = burnedStr;
+        document.getElementById('sectorCount').textContent = sectors.length;
+        document.getElementById('hasAnalysis').textContent = withAnalysis;
+    }
+
+    function populateFilters() {
+        const sectors = [...new Set(allCases.map(c => c.sector).filter(Boolean))].sort();
+        const select = document.getElementById('sectorFilter');
+        sectors.forEach(s => select.innerHTML += `<option value="${s}">${s}</option>`);
+    }
+
+    function filterCases() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const sector = document.getElementById('sectorFilter').value;
+        const hasAnalysis = document.getElementById('hasAnalysisFilter').value;
+        
+        const filtered = allCases.filter(c => {
+            if (search && !c.name?.toLowerCase().includes(search)) return false;
+            if (sector && c.sector !== sector) return false;
+            if (hasAnalysis === 'yes' && !c.failure_analysis && !c.market_analysis) return false;
+            return true;
+        });
+        
+        const grid = document.getElementById('casesGrid');
+        grid.innerHTML = filtered.slice(0, 100).map(c => `
+            <div class="case-card">
+                <div class="case-header">
+                    <div>
+                        <div class="case-name">${c.name || 'N/A'}</div>
+                        <div class="case-id">#${c.id}</div>
+                    </div>
+                </div>
+                ${c.sector ? `<div class="case-sector">${c.sector}</div>` : ''}
+                ${c.total_cash_burned ? `<div class="case-burn">💸 ${c.total_cash_burned}</div>` : ''}
+                ${c.failure_analysis ? `<div class="case-analysis">${c.failure_analysis.slice(0, 200)}...</div>` : ''}
+            </div>
+        `).join('');
+        
+        if (filtered.length > 100) {
+            grid.innerHTML += `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#8892b0;">显示前100个结果，共 ${filtered.length} 个</div>`;
+        }
+    }
+    </script>
+</body>
+</html>
