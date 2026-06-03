@@ -197,9 +197,14 @@
         });
         
         const grid = document.getElementById('casesGrid');
+        grid.innerHTML = '<div style="padding:10px;color:#8892b0;">加载中...</div>';
+        
+        // Use setTimeout to allow UI to update
+        await new Promise(r => setTimeout(r, 10));
         grid.innerHTML = '';
         
-        for (const c of filtered.slice(0, 50)) {
+        const displayCount = Math.min(filtered.length, 100); // Limit initial render
+        for (const c of filtered.slice(0, displayCount)) {
             const tc = await translateCase(c, currentLang);
             const name = tc.name || c.name || 'N/A';
             const sector = tc.sector || c.sector || '';
@@ -227,7 +232,7 @@
         }
         
         if (filtered.length > 50) {
-            grid.innerHTML += `<div style="grid-column:1/-1;text-align:center;padding:20px;color:#8892b0;">显示前50个结果，共 ${filtered.length} 个</div>`;
+            grid.innerHTML += `<div style="grid-column:1/-1;text-align:center;padding:20px;color:#8892b0;">显示前 ${displayCount} 个结果，共 ${filtered.length} 个</div>`;
         }
     }
 
