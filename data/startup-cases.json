@@ -1,0 +1,165 @@
+{
+  "cases": [
+    {
+      "id": "2035-wework",
+      "name": "WeWork",
+      "sector": "Real Estate / PropTech",
+      "product_type": "Marketplace",
+      "founding_year": 2010,
+      "end_year": 2019,
+      "total_cash_burned": "$22.0B",
+      "funding_raised": "$12.8B",
+      "valuation_peak": "$47B",
+      "status": "failed",
+      
+      "failure_analysis": "WeWork died from a combination of unsustainable business model, governance failures, and market timing. The core issue was that WeWork burned cash at an unsustainable rate while claiming to be a tech company to justify sky-high valuations. Founder Adam Neumann's erratic behavior and self-dealing (including a $5.9M consulting fee to his own company) eroded investor confidence. The failed IPO attempt in 2019 exposed the truth: WeWork was a real estate company, not a tech disruptor.",
+      
+      "market_analysis": "The flexible workspace market was real but not revolutionary. WeWork's model required massive capital deployment for leasehold improvements while charging customers monthly. The unit economics worked in theory but failed in practice due to high turnover, long lease commitments, and the need for constant expansion to maintain growth narratives.",
+      
+      "startup_learnings": [
+        "Unit economics must work without constant growth assumptions",
+        "Tech valuations require tech-level margins",
+        "Founder governance and checks-and-balances are essential",
+        "IPO readiness should be validated before claiming unicorn status",
+        "Corporate governance isn't optional for high-growth companies"
+      ],
+      
+      "scalability": "Coworking is inherently capital-intensive and asset-heavy. Unlike software businesses with near-zero marginal costs, WeWork needed billions to grow. The model requires maintaining high occupancy rates while continuously expanding, creating a growth treadmill.",
+      
+      "pivot_concept": "A sustainable version of WeWork would focus on profitability over growth, operate in select high-demand markets, and be transparent about being a real estate technology company rather than a tech company.",
+      
+      "relevance_tags": ["real-estate", "marketplace", "unicorn", "ipo-failure", "governance"],
+      "similar_cases": ["1813-quibi", "2156-gotv", "2572-techspace"]
+    },
+    {
+      "id": "1891-quibi",
+      "name": "Quibi",
+      "sector": "Entertainment / Streaming",
+      "product_type": "Mobile Video Platform",
+      "founding_year": 2018,
+      "end_year": 2020,
+      "total_cash_burned": "$1.75B",
+      "funding_raised": "$1.75B",
+      "valuation_peak": "$4.4B",
+      "status": "failed",
+      
+      "failure_analysis": "Quibi failed due to timing, positioning, and product design errors. The premise of 'quick bites' for mobile viewing was flawed: users already had YouTube for free, and the content wasn't compelling enough to justify a subscription. The 'Turnstile' feature (designed to keep phone orientation neutral) frustrated users. Most critically, the pandemic eliminated the only valid use case: watching on-the-go.",
+      
+      "market_analysis": "The mobile video market was dominated by free alternatives (YouTube, TikTok, Instagram). Quibi's paid model required content quality that took years to produce while the platform needed immediate engagement to retain users. The competitive landscape shifted dramatically with TikTok's rise.",
+      
+      "startup_learnings": [
+        "Product differentiation must be demonstrable and defensible",
+        "Free alternatives can kill paid models",
+        "Pandemic-era assumptions should be stress-tested",
+        "Content investment requires long runway before platform launch",
+        "User acquisition without retention is worthless"
+      ],
+      
+      "scalability": "High-quality content production requires significant time and capital. Quibi's $1.75B was spent mostly on content ($100M alone for 'Please Like Me') before validating user demand. The model required constant content investment without network effects.",
+      
+      "pivot_concept": "A successful mobile video platform would need either viral free content (like TikTok), a unique format that can't be replicated, or a proven content library before launch.",
+      
+      "relevance_tags": ["streaming", "mobile", "content", "pandemic", "subscription"],
+      "similar_cases": ["2035-wework", "1912-hulu", "2201-newtube"]
+    },
+    {
+      "id": "2171-fabcom",
+      "name": "Fab.com",
+      "sector": "E-commerce / Design",
+      "product_type": "Flash Sales Platform",
+      "founding_year": 2011,
+      "end_year": 2015,
+      "total_cash_burned": "$336M",
+      "funding_raised": "$336M",
+      "valuation_peak": "$1.0B",
+      "status": "failed",
+      
+      "failure_analysis": "Fab.com pivoted too many times and lost focus. Started as a social network for designers, pivoted to flash sales, then to e-commerce, then to home goods. Each pivot burned more cash and alienated existing users. The $1.1B acquisition attempt and subsequent layoffs signaled the end.",
+      
+      "market_analysis": "The flash sales model had inherent issues: low margins, inventory risk, and no loyalty. As competitors emerged, differentiation vanished. The shift to home goods required completely different supply chain expertise.",
+      
+      "startup_learnings": [
+        "Pivots should be strategic, not desperate",
+        "Inventory-based businesses have thin margins",
+        "Acquisition attempts can destroy company culture",
+        "User loyalty requires consistent value proposition",
+        "Cash preservation is critical for e-commerce"
+      ],
+      
+      "scalability": "E-commerce flash sales scale with inventory and marketing spend. Fab's high marketing costs (reportedly 40% of revenue) meant scale didn't improve unit economics. The model required constant new customers.",
+      
+      "pivot_concept": "A sustainable flash sales model would need exclusive products, better margins, and a loyal customer base built before aggressive expansion.",
+      
+      "relevance_tags": ["ecommerce", "flash-sales", "pivot", "design", "inventory"],
+      "similar_cases": ["2201-gilt", "2099-onekingslane", "2001-pets"]
+    },
+    {
+      "id": "2189-homejoy",
+      "name": "Homejoy",
+      "sector": "On-Demand Services",
+      "product_type": "Home Services Marketplace",
+      "founding_year": 2012,
+      "end_year": 2015,
+      "total_cash_burned": "$40M",
+      "funding_raised": "$40M",
+      "valuation_peak": "$500M",
+      "status": "failed",
+      
+      "failure_analysis": "Homejoy faced 'gig economy' legal challenges similar to Uber. California labor regulators sued over worker classification (employee vs. contractor). The core business model—relying on contractors to perform services—was legally vulnerable. Combined with fierce competition from Handy, Homejoy couldn't survive.",
+      
+      "market_analysis": "The home cleaning market was fragmented and price-sensitive. Homejoy's model required high volume and low prices, creating razor-thin margins. Competition from Handy (which raised $1B) made the market untenable for a smaller player.",
+      
+      "startup_learnings": [
+        "Legal and regulatory risks must be assessed early",
+        "Business models dependent on contractor classification are risky",
+        "Market leadership requires either scale or niche focus",
+        "Capital-intensive service businesses need significant runway",
+        "Competition from well-funded rivals is existential for small players"
+      ],
+      
+      "scalability": "Home services require local operations, quality control, and supply-side management. Each city requires significant investment before profitability. The model doesn't benefit from typical software scaling advantages.",
+      
+      "pivot_concept": "A successful version might focus on premium, high-margin services, employ workers directly, or target markets with clearer regulatory frameworks.",
+      
+      "relevance_tags": ["gig-economy", "home-services", "legal-risk", "contractor", "marketplace"],
+      "similar_cases": ["2099-handy", "2101-taskrabbit", "2201-instacart"]
+    },
+    {
+      "id": "2563-plenty-unlimited",
+      "name": "Plenty Unlimited",
+      "sector": "Agriculture / PropTech",
+      "product_type": "Indoor Farming Technology",
+      "founding_year": 2014,
+      "end_year": 2023,
+      "total_cash_burned": "$900M",
+      "funding_raised": "$900M",
+      "valuation_peak": "$2.3B",
+      "status": "failed",
+      
+      "failure_analysis": "Despite high-profile backers (Jeff Bezos, SoftBank), Plenty failed to achieve promised yields and scale. The technology worked in labs but struggled in commercial production. High energy costs, crop failures, and inability to meet grocery store volume requirements led to shutdown.",
+      
+      "market_analysis": "Indoor farming promised pesticide-free, local produce with consistent yields. However, the economics were brutal: energy costs for LED lighting, climate control, and water systems were far higher than traditional agriculture. Grocery stores demanded volumes and prices indoor farms couldn't deliver.",
+      
+      "startup_learnings": [
+        "Lab results ≠ commercial viability",
+        "Energy-intensive businesses face margin pressure",
+        "Enterprise sales require meeting customer specs, not just promises",
+        "Deep tech requires longer timelines and more capital",
+        "High valuations based on future promises are risky"
+      ],
+      
+      "scalability": "Indoor farming requires purpose-built facilities with massive energy infrastructure. Each farm is essentially custom construction, limiting typical startup scaling advantages. Technology improvements don't translate linearly to cost reductions.",
+      
+      "pivot_concept": "A sustainable indoor farming model would need breakthroughs in energy efficiency, focus on high-value crops, or position as a premium niche rather than grocery store volume supplier.",
+      
+      "relevance_tags": ["agritech", "indoor-farming", "deep-tech", "energy", "softbank"],
+      "similar_cases": ["2561-bowery-farming", "2562-aeroFarms", "2564-iron-ox"]
+    }
+  ],
+  "metadata": {
+    "total_count": 5,
+    "last_updated": "2026-06-04",
+    "sources": ["loot-drop.io", "public reports", "SEC filings"],
+    "format_version": "1.0"
+  }
+}
