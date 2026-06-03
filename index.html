@@ -143,7 +143,7 @@
 
     // 加载数据
     const loadingEl = document.getElementById('loading');
-    loadingEl.innerHTML = '⏳ Loading...案例数据（首次加载可能需要几秒）...';
+    loadingEl.innerHTML = '⏳ 正在加载（首次加载可能需要几秒）...';
     
     fetch('docs/data/cases.json', { timeout: 30000 })
         .then(r => {
