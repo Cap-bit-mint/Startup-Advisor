@@ -100,18 +100,17 @@ openclaw skill import https://github.com/Cap-bit-mint/Startup-Advisor/raw/main/a
 
 **Agent**：分析报告
 - **风险等级**: 3（中等）
-- **置信度**: moderate（基于AI助手赛道统计）
+- **置信度**: moderate（基于AI写作助手赛道统计）
 - **匹配模式**:
   - 伪需求（中等风险）
   - 竞争认知偏差（高风险）
 - **建议**:
   - 验证内容创作者的真实痛点
   - 明确与ChatGPT/Jasper的差异化
-- **相关案例**:
-  - [Quibi](https://www.loot-drop.io/startup/1891-quibi) - 竞争低估
-  - [WeWork](https://www.loot-drop.io/startup/2035-wework) - 估值泡沫
-  - [Fab.com](https://www.loot-drop.io/startup/2171-fabcom) - 商业模式缺陷
-  - [Homejoy](https://www.loot-drop.io/startup/2189-homejoy) - 政策风险
+- **相关案例**（匹配维度：产品类型+目标用户）:
+  - [Jasper AI](https://www.loot-drop.io/) - AI写作工具失败案例（产品类型+目标用户匹配）
+  - [Sudowrite](https://www.loot-drop.io/) - 订阅制AI写作工具（商业模式+核心功能匹配）
+  - [Copy.ai](https://www.loot-drop.io/) - 内容生成SaaS（目标用户+定价模式匹配）
 
 ---
 
