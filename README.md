@@ -375,3 +375,33 @@ A: 基于里程碑的合理估值：
 ## 许可
 
 MIT License
+
+---
+
+## 🌐 在线访问
+
+可视化工具已部署至 GitHub Pages，可直接在线访问：
+
+### 访问地址
+
+| 工具 | 地址 |
+|------|------|
+| **主入口** | [https://cap-bit-mint.github.io/Startup-Advisor/](https://cap-bit-mint.github.io/Startup-Advisor/) |
+| 失败矩阵 | [?tool=matrix](https://cap-bit-mint.github.io/Startup-Advisor/?tool=matrix) |
+| 决策树 | [?tool=decision](https://cap-bit-mint.github.io/Startup-Advisor/?tool=decision) |
+| 风险评估 | [?tool=assessment](https://cap-bit-mint.github.io/Startup-Advisor/?tool=assessment) |
+
+### 本地访问
+
+```bash
+# 克隆仓库
+git clone https://github.com/Cap-bit-mint/Startup-Advisor.git
+
+# 直接打开
+open Startup-Advisor/docs/index.html
+
+# 或使用本地服务器
+cd Startup-Advisor/docs
+python3 -m http.server 8080
+# 访问 http://localhost:8080
+```

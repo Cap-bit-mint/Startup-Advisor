@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>失败矩阵 - Startup-Advisor</title>
+    <link rel="stylesheet" href="../css/theme.css">
+    <style>
+        /* 失败矩阵专属样式 */
+        .matrix-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .matrix-table th,
+        .matrix-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid var(--border-default);
+        }
+        
+        .matrix-table th {
+            background: var(--bg-card);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .matrix-table th:first-child {
+            background: transparent;
+        }
+        
+        .matrix-cell {
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        
+        .matrix-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        .matrix-cell .cell-content {
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+        }
+        
+        .matrix-cell .cell-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+        
+        .matrix-cell .cell-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .matrix-cell .cell-risk {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+        
+        /* 风险颜色 */
+        .risk-critical .cell-content { background: rgba(233, 69, 96, 0.3); border: 1px solid #e94560; }
+        .risk-high .cell-content { background: rgba(243, 156, 18, 0.3); border: 1px solid #f39c12; }
+        .risk-medium .cell-content { background: rgba(52, 152, 219, 0.3); border: 1px solid #3498db; }
+        .risk-low .cell-content { background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; }
+        
+        /* 高亮效果 */
+        .matrix-cell.highlighted .cell-content {
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
+            border-color: var(--color-accent) !important;
+        }
+        
+        /* 筛选区域 */
+        .filter-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+        
+        .filter-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-default);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .filter-btn:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .filter-btn.active {
+            background: rgba(233, 69, 96, 0.3);
+            border-color: var(--color-primary);
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-default);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        /* 项目匹配 */
+        .project-match {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .match-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+        
+        @media (max-width: 768px) {
+            .match-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .match-results {
+            margin-top: var(--spacing-lg);
+            display: none;
+        }
+        
+        .match-results.show {
+            display: block;
+        }
+        
+        .match-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            border-left: 3px solid var(--color-primary);
+        }
+        
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .match-pattern {
+            font-weight: 600;
+        }
+        
+        .match-score {
+            font-size: 0.85rem;
+            color: var(--color-accent);
+        }
+        
+        .match-risk {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        /* 统计概览 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-narrow">
+        <h1 class="title-gradient-primary text-center">失败模式矩阵</h1>
+        <p class="text-center text-muted" style="margin-bottom: 30px;">
+            24种失败模式 × 5个发展阶段 | 数据来源：真实创业失败案例
+        </p>
+        
+        <!-- 统计概览 -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" style="color: #e94560;">5</div>
+                <div class="stat-label">极高风险模式</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" style="color: #f39c12;">8</div>
+                <div class="stat-label">高风险模式</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" style="color: #3498db;">7</div>
+                <div class="stat-label">中等风险模式</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" style="color: #2ecc71;">4</div>
+                <div class="stat-label">低风险模式</div>
+            </div>
+        </div>
+        
+        <!-- 筛选区域 -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>按类别筛选</label>
+                    <div class="filter-buttons" id="categoryFilters">
+                        <button class="filter-btn active" data-value="all">全部</button>
+                        <button class="filter-btn" data-value="market">📊 市场</button>
+                        <button class="filter-btn" data-value="product">💡 产品</button>
+                        <button class="filter-btn" data-value="team">👥 团队</button>
+                        <button class="filter-btn" data-value="operation">⚙️ 运营</button>
+                        <button class="filter-btn" data-value="financing">💰 融资</button>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>按风险等级</label>
+                    <div class="filter-buttons" id="riskFilters">
+                        <button class="filter-btn active" data-value="all">全部</button>
+                        <button class="filter-btn" data-value="critical">🔴 极高</button>
+                        <button class="filter-btn" data-value="high">🟡 高</button>
+                        <button class="filter-btn" data-value="medium">🔵 中</button>
+                        <button class="filter-btn" data-value="low">🟢 低</button>
+                    </div>
+                </div>
+            </div>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索失败模式...">
+            </div>
+        </div>
+        
+        <!-- 矩阵表格 -->
+        <div class="matrix-container">
+            <table class="matrix-table" id="matrixTable">
+                <thead>
+                    <tr>
+                        <th>类别 / 阶段</th>
+                        <th>概念期</th>
+                        <th>MVP期</th>
+                        <th>成长期</th>
+                        <th>规模化期</th>
+                    </tr>
+                </thead>
+                <tbody id="matrixBody">
+                    <!-- 动态生成 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 项目匹配 -->
+        <div class="project-match">
+            <h3 style="margin-bottom: 15px;">🎯 项目风险匹配</h3>
+            <div class="match-form">
+                <div class="form-group">
+                    <label class="form-label">所在行业</label>
+                    <select class="form-input form-select" id="industrySelect">
+                        <option value="">请选择行业</option>
+                        <option value="saas">SaaS / B2B</option>
+                        <option value="ecommerce">电商 / 零售</option>
+                        <option value="consumer">消费 / 社交</option>
+                        <option value="hardware">硬件 / IoT</option>
+                        <option value="healthcare">医疗 / 健康</option>
+                        <option value="fintech">金融 / 支付</option>
+                        <option value="sharing">共享经济</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">发展阶段</label>
+                    <select class="form-input form-select" id="stageSelect">
+                        <option value="">请选择阶段</option>
+                        <option value="concept">概念期</option>
+                        <option value="mvp">MVP期</option>
+                        <option value="growth">成长期</option>
+                        <option value="scale">规模化期</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="analyzeProject()">分析匹配</button>
+            </div>
+            <div class="match-results" id="matchResults">
+                <h4 style="margin-bottom: 10px;">匹配到的风险模式</h4>
+                <div id="matchList"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 详情弹窗 -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">详情</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    
+    <script src="../js/data.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        // 状态
+        let filters = {
+            category: 'all',
+            risk: 'all',
+            search: ''
+        };
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initFilters();
+            renderMatrix();
+            initSearch();
+            notifyParentReady();
+        });
+        
+        // 通知父窗口已就绪
+        function notifyParentReady() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    source: 'startup-advisor-visualization',
+                    type: 'skill:ready',
+                    data: { tool: 'matrix', page: 'matrix.html' }
+                }, '*');
+            }
+        }
+        
+        // 初始化筛选器
+        function initFilters() {
+            document.querySelectorAll('#categoryFilters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#categoryFilters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filters.category = btn.dataset.value;
+                    renderMatrix();
+                });
+            });
+            
+            document.querySelectorAll('#riskFilters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#riskFilters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filters.risk = btn.dataset.value;
+                    renderMatrix();
+                });
+            });
+        }
+        
+        // 初始化搜索
+        function initSearch() {
+            const searchInput = document.getElementById('searchInput');
+            let debounceTimer;
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    filters.search = e.target.value.toLowerCase();
+                    renderMatrix();
+                }, 300);
+            });
+        }
+        
+        // 渲染矩阵
+        function renderMatrix() {
+            const tbody = document.getElementById('matrixBody');
+            const categories = StartupAdvisorData.failureMatrix.categories;
+            const stages = ['concept', 'mvp', 'growth', 'scale'];
+            
+            let html = '';
+            
+            Object.entries(categories).forEach(([catKey, cat]) => {
+                html += `<tr><td><strong>${cat.icon} ${cat.name}</strong></td>`;
+                
+                stages.forEach(stage => {
+                    const patterns = getPatternsByCategoryAndStage(catKey, stage);
+                    const cellHtml = renderCell(patterns);
+                    html += `<td>${cellHtml}</td>`;
+                });
+                
+                html += '</tr>';
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        // 获取指定类别和阶段的模式
+        function getPatternsByCategoryAndStage(category, stage) {
+            return StartupAdvisorData.failureMatrix.patterns.filter(p => {
+                // 类别筛选
+                if (filters.category !== 'all' && p.category !== filters.category) return false;
+                
+                // 风险筛选
+                if (filters.risk !== 'all' && p.risk !== filters.risk) return false;
+                
+                // 搜索筛选
+                if (filters.search && !p.title.toLowerCase().includes(filters.search)) return false;
+                
+                // 阶段匹配
+                return p.stage === stage;
+            });
+        }
+        
+        // 渲染单元格
+        function renderCell(patterns) {
+            if (patterns.length === 0) {
+                return '<div style="color: var(--text-muted); font-size: 0.8rem;">暂无</div>';
+            }
+            
+            return patterns.map(p => `
+                <div class="matrix-cell risk-${p.risk}" 
+                     onclick="showDetail('${p.id}')" 
+                     title="${p.title}">
+                    <div class="cell-content">
+                        <div class="cell-icon">${getRiskIcon(p.risk)}</div>
+                        <div class="cell-title">${p.title}</div>
+                        <div class="cell-risk">${p.cases.length}个案例</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 获取风险图标
+        function getRiskIcon(risk) {
+            switch (risk) {
+                case 'critical': return '🔴';
+                case 'high': return '🟡';
+                case 'medium': return '🔵';
+                case 'low': return '🟢';
+                default: return '⚪';
+            }
+        }
+        
+        // 显示详情
+        function showDetail(patternId) {
+            const pattern = StartupAdvisorData.failureMatrix.patterns.find(p => p.id === patternId);
+            if (!pattern) return;
+            
+            const category = StartupAdvisorData.failureMatrix.categories[pattern.category];
+            const stage = StartupAdvisorData.failureMatrix.stages[pattern.stage];
+            const risk = StartupAdvisorData.failureMatrix.riskLevels[pattern.risk];
+            
+            document.getElementById('modalTitle').textContent = pattern.title;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <span class="badge" style="background: ${category?.color}20; color: ${category?.color}; margin-right: 8px;">
+                        ${category?.icon} ${category?.name}
+                    </span>
+                    <span class="badge" style="background: ${risk?.color}20; color: ${risk?.color};">
+                        ${risk?.name}风险
+                    </span>
+                </div>
+                
+                <p style="color: var(--text-muted); margin-bottom: 20px;">${pattern.description}</p>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong>📋 基础信息</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px;">
+                        <li><strong>阶段:</strong> ${stage?.name}</li>
+                        <li><strong>发生频率:</strong> ${pattern.frequency}</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong>🛡️ 预防措施</strong>
+                    <p style="margin-top: 8px; color: var(--text-muted);">${pattern.prevention}</p>
+                </div>
+                
+                <div>
+                    <strong>📚 相关案例 (${pattern.cases.length})</strong>
+                    <div style="margin-top: 10px;">
+                        ${pattern.cases.length > 0 
+                            ? pattern.cases.map(c => `
+                                <div style="background: var(--bg-card); padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+                                    <strong>${c.name}</strong> <span style="color: var(--text-muted);">(${c.year})</span>
+                                    <p style="margin-top: 5px; font-size: 0.9rem; color: var(--text-muted);">${c.lesson}</p>
+                                </div>
+                            `).join('')
+                            : '<p style="color: var(--text-muted);">暂无具体案例</p>'
+                        }
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modal').classList.add('show');
+        }
+        
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+        
+        // 分析项目匹配
+        function analyzeProject() {
+            const industry = document.getElementById('industrySelect').value;
+            const stage = document.getElementById('stageSelect').value;
+            const resultsDiv = document.getElementById('matchResults');
+            const listDiv = document.getElementById('matchList');
+            
+            if (!industry && !stage) {
+                resultsDiv.classList.remove('show');
+                return;
+            }
+            
+            // 清除之前的高亮
+            document.querySelectorAll('.matrix-cell').forEach(cell => {
+                cell.classList.remove('highlighted');
+            });
+            
+            // 匹配逻辑
+            const industryMap = StartupAdvisorData.industryMapping;
+            const matches = [];
+            
+            StartupAdvisorData.failureMatrix.patterns.forEach(pattern => {
+                let score = 0;
+                let reasons = [];
+                
+                // 行业匹配
+                if (industry && industryMap[industry]?.categories.includes(pattern.category)) {
+                    score += 30;
+                    reasons.push('行业相关');
+                }
+                
+                // 阶段匹配
+                if (stage && pattern.stage === stage) {
+                    score += 40;
+                    reasons.push('阶段匹配');
+                }
+                
+                // 风险权重
+                if (pattern.risk === 'critical') score += 20;
+                if (pattern.risk === 'high') score += 15;
+                
+                if (score > 50) {
+                    matches.push({
+                        pattern,
+                        score: Math.min(score, 100),
+                        reasons: reasons.join('+')
+                    });
+                }
+            });
+            
+            matches.sort((a, b) => b.score - a.score);
+            
+            if (matches.length > 0) {
+                listDiv.innerHTML = matches.slice(0, 5).map((m, i) => `
+                    <div class="match-item">
+                        <div class="match-header">
+                            <span class="match-pattern">${i + 1}. ${m.pattern.title}</span>
+                            <span class="match-score">匹配度 ${m.score}%</span>
+                        </div>
+                        <div class="match-risk">${m.reasons} | 风险: ${m.pattern.risk === 'critical' ? '极高' : m.pattern.risk === 'high' ? '高' : '中'}</div>
+                    </div>
+                `).join('');
+                
+                // 高亮匹配的单元格
+                matches.slice(0, 5).forEach(m => {
+                    document.querySelectorAll('.matrix-cell').forEach(cell => {
+                        if (cell.onclick && cell.onclick.toString().includes(m.pattern.id)) {
+                            cell.classList.add('highlighted');
+                        }
+                    });
+                });
+            } else {
+                listDiv.innerHTML = '<p style="color: var(--text-muted);">未找到高匹配度的风险模式</p>';
+            }
+            
+            resultsDiv.classList.add('show');
+        }
+        
+        // 点击弹窗背景关闭
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+        
+        // ESC 关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+        
+        // 监听父窗口消息
+        window.addEventListener('message', (event) => {
+            const message = event.data;
+            if (message.source !== 'startup-advisor-skill') return;
+            
+            const { type, data } = message;
+            
+            if (type === 'skill:navigate') {
+                // 处理导航请求
+                if (data.params?.industry) {
+                    document.getElementById('industrySelect').value = data.params.industry;
+                }
+                if (data.params?.stage) {
+                    document.getElementById('stageSelect').value = data.params.stage;
+                }
+                if (data.params?.industry || data.params?.stage) {
+                    analyzeProject();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
