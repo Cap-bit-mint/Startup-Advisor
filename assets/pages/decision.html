@@ -3,127 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>决策树 - Startup-Advisor</title>
+    <title>案例搜索 & 决策树 - Startup-Advisor</title>
     <link rel="stylesheet" href="../css/theme.css">
     <style>
-        /* 决策树专属样式 */
-        .tree-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            min-height: 500px;
+        /* 案例搜索样式 */
+        .search-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
         }
         
-        .tree-level {
+        .search-box {
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border-default);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: var(--spacing-md);
             flex-wrap: wrap;
         }
         
-        .tree-branch {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .filter-group {
+            min-width: 150px;
         }
         
-        .tree-connector {
-            width: 2px;
-            height: 30px;
-            background: var(--border-default);
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
         }
         
-        .tree-connector.horizontal {
-            width: 40px;
-            height: 2px;
-            margin: 0 10px;
+        /* 案例卡片 */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
         }
         
-        .node-content {
+        .case-card {
             background: var(--bg-card);
-            border: 2px solid var(--color-accent);
             border-radius: var(--radius-md);
-            padding: 20px 25px;
-            text-align: center;
-            min-width: 280px;
-            max-width: 350px;
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-default);
+            cursor: pointer;
             transition: all var(--transition-normal);
         }
         
-        .node-content.question:hover {
-            background: rgba(100, 255, 218, 0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(100, 255, 218, 0.2);
+        .case-card:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(100, 255, 218, 0.15);
         }
         
-        .node-content.yes {
-            border-color: var(--color-success);
-            background: rgba(46, 204, 113, 0.1);
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-md);
         }
         
-        .node-content.no {
-            border-color: var(--color-danger);
-            background: rgba(231, 76, 60, 0.1);
-        }
-        
-        .node-content.warning {
-            border-color: var(--color-warning);
-            background: rgba(243, 156, 18, 0.1);
-        }
-        
-        .node-question {
+        .case-name {
             font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text-primary);
         }
         
-        .node-hint {
+        .case-year {
             font-size: 0.85rem;
             color: var(--text-muted);
         }
         
-        .node-options {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            justify-content: center;
-        }
-        
-        .branch-label {
-            padding: 8px 20px;
+        .case-status {
+            padding: 4px 10px;
             border-radius: 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            transition: all var(--transition-fast);
         }
         
-        .branch-label.yes {
-            background: rgba(46, 204, 113, 0.2);
-            color: var(--color-success);
-            border: 1px solid var(--color-success);
+        .case-status.failed { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .case-status.acquired { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .case-status.struggling { background: rgba(243, 156, 18, 0.2); color: #f39c12; }
+        
+        .case-industry {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
         }
         
-        .branch-label.yes:hover {
-            background: rgba(46, 204, 113, 0.3);
+        .case-reason {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
         }
         
-        .branch-label.no {
-            background: rgba(231, 76, 60, 0.2);
-            color: var(--color-danger);
-            border: 1px solid var(--color-danger);
+        .case-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
         }
         
-        .branch-label.no:hover {
-            background: rgba(231, 76, 60, 0.3);
+        .case-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         
-        .branch-label.selected {
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        .tag {
+            padding: 3px 10px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* 统计概览 */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        @media (max-width: 768px) {
+            .stats-overview { grid-template-columns: repeat(2, 1fr); }
+            .filter-row { flex-direction: column; }
+        }
+        
+        .stat-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
         
         /* 自测问卷 */
@@ -132,11 +175,6 @@
             border-radius: var(--radius-lg);
             padding: var(--spacing-xl);
             margin-top: var(--spacing-xl);
-        }
-        
-        .quiz-header {
-            text-align: center;
-            margin-bottom: var(--spacing-lg);
         }
         
         .quiz-progress {
@@ -154,27 +192,12 @@
             transition: all var(--transition-fast);
         }
         
-        .quiz-step.current {
-            background: var(--color-accent);
-            transform: scale(1.2);
-        }
-        
-        .quiz-step.completed {
-            background: var(--color-success);
-        }
+        .quiz-step.current { background: var(--color-accent); transform: scale(1.3); }
+        .quiz-step.completed { background: var(--color-success); }
         
         .quiz-question {
             text-align: center;
             margin-bottom: var(--spacing-lg);
-        }
-        
-        .quiz-question h3 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-        }
-        
-        .quiz-question p {
-            color: var(--text-muted);
         }
         
         .quiz-options {
@@ -185,13 +208,14 @@
         }
         
         .quiz-option {
-            padding: 15px 30px;
+            padding: 16px 32px;
             border-radius: var(--radius-md);
             border: 2px solid var(--border-default);
-            background: var(--bg-card);
+            background: var(--bg-dark);
             cursor: pointer;
             transition: all var(--transition-fast);
-            min-width: 150px;
+            font-size: 1rem;
+            min-width: 140px;
         }
         
         .quiz-option:hover {
@@ -199,346 +223,383 @@
             transform: translateY(-2px);
         }
         
-        .quiz-option.selected.yes {
-            border-color: var(--color-success);
-            background: rgba(46, 204, 113, 0.2);
-        }
+        .quiz-option.selected.yes { border-color: var(--color-success); background: rgba(46, 204, 113, 0.15); }
+        .quiz-option.selected.no { border-color: var(--color-danger); background: rgba(231, 76, 60, 0.15); }
         
-        .quiz-option.selected.no {
-            border-color: var(--color-danger);
-            background: rgba(231, 76, 60, 0.2);
-        }
-        
-        .quiz-option.selected.neutral {
-            border-color: var(--color-warning);
-            background: rgba(243, 156, 18, 0.2);
-        }
-        
-        /* 结果区域 */
+        /* 结果 */
         .quiz-result {
             text-align: center;
             padding: var(--spacing-xl);
         }
         
-        .result-icon {
-            font-size: 4rem;
-            margin-bottom: var(--spacing-md);
+        .result-icon { font-size: 4rem; margin-bottom: var(--spacing-md); }
+        .result-title { font-size: 1.5rem; margin-bottom: var(--spacing-sm); }
+        .result-score { font-size: 3rem; font-weight: 700; color: var(--color-accent); margin: var(--spacing-md) 0; }
+        
+        /* 案例详情弹窗 */
+        .detail-modal {
+            max-width: 700px;
         }
         
-        .result-title {
-            font-size: 1.5rem;
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .result-score {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--color-accent);
-            margin: var(--spacing-md) 0;
-        }
-        
-        .result-message {
-            color: var(--text-muted);
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .result-recommendations {
-            text-align: left;
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-lg);
+        .detail-section {
             margin-top: var(--spacing-lg);
         }
         
-        .result-recommendations h4 {
-            margin-bottom: var(--spacing-md);
+        .detail-section h4 {
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-accent);
         }
         
-        .result-recommendations ul {
-            padding-left: 20px;
+        .lesson-list {
+            list-style: none;
+            padding: 0;
         }
         
-        .result-recommendations li {
-            margin-bottom: 8px;
+        .lesson-list li {
+            padding: var(--spacing-sm);
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            border-left: 3px solid var(--color-accent);
+        }
+        
+        /* 无结果 */
+        .no-results {
+            text-align: center;
+            padding: var(--spacing-xxl);
             color: var(--text-muted);
         }
         
-        /* 交互式流程图 */
-        .flowchart-container {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl);
-            margin-bottom: var(--spacing-xl);
-        }
-        
-        .tabs {
-            margin-bottom: var(--spacing-lg);
+        .no-results .icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="title-gradient-accent text-center">🌲 创业决策树</h1>
+        <h1 class="title-gradient-accent text-center">🔍 失败案例搜索</h1>
         <p class="text-center text-muted" style="margin-bottom: 30px;">
-            交互式决策流程图 + 自测问卷 | 基于真实失败案例的决策框架
+            搜索 40+ 真实创业失败案例 | 基于 Startups.RIP & 内部库
         </p>
         
-        <!-- 标签页切换 -->
-        <div class="tabs" style="justify-content: center;">
-            <button class="tab active" onclick="switchView('flowchart')">📊 决策流程图</button>
-            <button class="tab" onclick="switchView('quiz')">📝 自测问卷</button>
+        <!-- 统计概览 -->
+        <div class="stats-overview" id="statsOverview">
+            <div class="stat-item">
+                <div class="stat-value" id="totalCases">0</div>
+                <div class="stat-label">案例总数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="failedCases">0</div>
+                <div class="stat-label">已失败</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="acquiredCases">0</div>
+                <div class="stat-label">被收购</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="yearRange">-</div>
+                <div class="stat-label">时间跨度</div>
+            </div>
         </div>
         
-        <!-- 决策流程图视图 -->
-        <div id="flowchartView" class="tab-content active">
-            <div class="flowchart-container">
-                <div class="tree-container" id="treeContainer">
-                    <!-- 动态生成 -->
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" 
+                       placeholder="搜索公司名、行业、失败原因... (例如: Juicero, SaaS, 竞争)">
+                <button class="btn btn-accent" onclick="performSearch()">🔍 搜索</button>
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>行业</label>
+                    <select class="form-input form-select" id="industryFilter" onchange="performSearch()">
+                        <option value="">全部行业</option>
+                        <option value="SaaS">SaaS</option>
+                        <option value="电商">电商</option>
+                        <option value="社交">社交</option>
+                        <option value="硬件">硬件</option>
+                        <option value="金融">金融科技</option>
+                        <option value="医疗">医疗健康</option>
+                        <option value="企业">企业服务</option>
+                        <option value="AI">AI/科技</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>阶段</label>
+                    <select class="form-input form-select" id="stageFilter" onchange="performSearch()">
+                        <option value="">全部阶段</option>
+                        <option value="concept">概念期</option>
+                        <option value="mvp">MVP期</option>
+                        <option value="growth">成长期</option>
+                        <option value="scale">规模化期</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>结果</label>
+                    <select class="form-input form-select" id="statusFilter" onchange="performSearch()">
+                        <option value="">全部</option>
+                        <option value="failed">已失败</option>
+                        <option value="acquired">被收购</option>
+                        <option value="struggling">挣扎中</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>年份</label>
+                    <select class="form-input form-select" id="yearFilter" onchange="performSearch()">
+                        <option value="">全部年份</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <option value="2017">2017</option>
+                        <option value="2016">2016</option>
+                        <option value="2015">2015</option>
+                        <option value="2012">2012</option>
+                        <option value="2000">2000</option>
+                    </select>
                 </div>
             </div>
         </div>
         
-        <!-- 自测问卷视图 -->
-        <div id="quizView" class="tab-content">
-            <div class="quiz-section">
-                <div class="quiz-header">
-                    <h2>创业健康度自测</h2>
-                    <p class="text-muted">回答6个关键问题，获取个性化建议</p>
+        <!-- 搜索结果 -->
+        <div id="searchResults">
+            <div class="cases-grid" id="casesGrid">
+                <!-- 动态生成 -->
+            </div>
+            
+            <div class="no-results" id="noResults" style="display: none;">
+                <div class="icon">🔍</div>
+                <p>未找到匹配的案例</p>
+                <p style="font-size: 0.9rem;">尝试调整搜索条件</p>
+            </div>
+        </div>
+        
+        <!-- 自测问卷 -->
+        <div class="quiz-section">
+            <h3 class="text-center" style="margin-bottom: 20px;">🌲 创业健康度自测</h3>
+            <p class="text-center text-muted" style="margin-bottom: 30px;">
+                回答6个关键问题，获取个性化风险评估
+            </p>
+            
+            <div class="quiz-progress" id="quizProgress">
+                <!-- 动态生成 -->
+            </div>
+            
+            <div id="quizContent">
+                <div class="quiz-question">
+                    <h3 id="quizQuestion"></h3>
+                    <p id="quizHint" class="text-muted"></p>
                 </div>
-                
-                <div class="quiz-progress" id="quizProgress">
+                <div class="quiz-options" id="quizOptions">
                     <!-- 动态生成 -->
                 </div>
-                
-                <div id="quizContent">
-                    <div class="quiz-question">
-                        <h3 id="quizQuestion"></h3>
-                        <p id="quizHint" class="text-muted"></p>
-                    </div>
-                    <div class="quiz-options" id="quizOptions">
-                        <!-- 动态生成 -->
-                    </div>
-                </div>
-                
-                <div id="quizResult" class="quiz-result" style="display: none;">
-                    <!-- 结果显示 -->
-                </div>
+            </div>
+            
+            <div id="quizResult" class="quiz-result" style="display: none;">
+                <!-- 结果显示 -->
             </div>
         </div>
     </div>
     
-    <!-- 详情弹窗 -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
+    <!-- 案例详情弹窗 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content detail-modal">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">详情</h3>
-                <button class="modal-close" onclick="closeModal()">×</button>
+                <h3 class="modal-title" id="detailTitle">案例详情</h3>
+                <button class="modal-close" onclick="closeDetail()">×</button>
             </div>
-            <div id="modalBody"></div>
+            <div id="detailBody"></div>
         </div>
     </div>
     
     <script src="../js/data.js"></script>
-    <script src="../js/components.js"></script>
+    <script src="../js/data-service.js"></script>
     <script>
         // 状态
-        let currentNode = 'q1';
-        let selectedAnswers = {};
-        let score = 0;
         let quizStep = 0;
+        let quizScore = 0;
+        let currentResults = [];
         
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            initFlowchart();
+            initStats();
             initQuiz();
-            notifyParentReady();
+            performSearch();
+            
+            // 回车搜索
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
         });
         
-        // 通知父窗口
-        function notifyParentReady() {
-            if (window.parent !== window) {
-                window.parent.postMessage({
-                    source: 'startup-advisor-visualization',
-                    type: 'skill:ready',
-                    data: { tool: 'decision', page: 'decision.html' }
-                }, '*');
+        // 初始化统计
+        function initStats() {
+            const stats = CaseData.getStats();
+            document.getElementById('totalCases').textContent = stats.total;
+            document.getElementById('failedCases').textContent = stats.byStatus.failed;
+            document.getElementById('acquiredCases').textContent = stats.byStatus.acquired;
+            document.getElementById('yearRange').textContent = `${stats.yearRange.min}-${stats.yearRange.max}`;
+        }
+        
+        // 执行搜索
+        function performSearch() {
+            const query = document.getElementById('searchInput').value;
+            const filters = {
+                industry: document.getElementById('industryFilter').value,
+                stage: document.getElementById('stageFilter').value,
+                status: document.getElementById('statusFilter').value,
+                year: document.getElementById('yearFilter').value
+            };
+            
+            currentResults = CaseData.search(query, filters);
+            renderResults(currentResults);
+        }
+        
+        // 渲染搜索结果
+        function renderResults(results) {
+            const grid = document.getElementById('casesGrid');
+            const noResults = document.getElementById('noResults');
+            
+            if (results.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
             }
+            
+            noResults.style.display = 'none';
+            
+            grid.innerHTML = results.map(c => `
+                <div class="case-card" onclick="showCaseDetail('${c.id}')">
+                    <div class="case-header">
+                        <div>
+                            <div class="case-name">${c.name}</div>
+                            <div class="case-year">${c.year}</div>
+                        </div>
+                        <span class="case-status ${c.status}">${getStatusText(c.status)}</span>
+                    </div>
+                    <div class="case-industry">${c.industry}</div>
+                    <div class="case-reason">${c.reason}</div>
+                    <div class="case-meta">
+                        <span>💰 ${c.funding}</span>
+                        <span>📈 ${getStageText(c.stage)}</span>
+                    </div>
+                    <div class="case-tags">
+                        ${(c.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
         }
         
-        // 视图切换
-        function switchView(view) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        // 显示案例详情
+        function showCaseDetail(id) {
+            const c = CaseData.getCaseById(id);
+            if (!c) return;
             
-            event.target.classList.add('active');
+            const related = CaseData.getRelatedCases(id, 3);
             
-            if (view === 'flowchart') {
-                document.getElementById('flowchartView').classList.add('active');
-            } else {
-                document.getElementById('quizView').classList.add('active');
-            }
-        }
-        
-        // 初始化流程图
-        function initFlowchart() {
-            const container = document.getElementById('treeContainer');
-            const nodes = StartupAdvisorData.decisionTree.nodes;
-            const failureNodes = StartupAdvisorData.decisionTree.failureNodes;
-            const successNode = StartupAdvisorData.decisionTree.successNode;
-            
-            let html = '';
-            
-            // Q1 起始节点
-            html += renderQuestionNode(nodes[0]);
-            
-            // 连接线到下一级
-            html += `<div class="tree-connector"></div><div class="tree-level">`;
-            
-            // Q2 和失败节点
-            html += `<div class="tree-branch">`;
-            html += renderYesBranch(nodes[0], nodes[1]);
-            html += `</div>`;
-            
-            html += `<div class="tree-branch">`;
-            html += renderNoBranch(nodes[0], failureNodes['fail-pseudo']);
-            html += `</div>`;
-            
-            html += `</div>`;
-            
-            container.innerHTML = html;
-        }
-        
-        // 渲染问题节点
-        function renderQuestionNode(node) {
-            return `
-                <div class="tree-branch">
-                    <div class="node-content question" onclick="selectNode('${node.id}')">
-                        <div class="node-question">${node.question}</div>
-                        <div class="node-hint">${node.hint}</div>
+            document.getElementById('detailTitle').textContent = `${c.name} (${c.year})`;
+            document.getElementById('detailBody').innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <span class="case-status ${c.status}" style="margin-right: 10px;">${getStatusText(c.status)}</span>
+                    <span class="badge badge-info">${c.industry}</span>
+                </div>
+                
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">${c.reason}</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div class="card" style="padding: 15px;">
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">融资总额</div>
+                        <div style="font-size: 1.2rem; font-weight: 700;">${c.funding}</div>
+                    </div>
+                    <div class="card" style="padding: 15px;">
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">失败阶段</div>
+                        <div style="font-size: 1.2rem; font-weight: 700;">${getStageText(c.stage)}</div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>📚 核心教训</h4>
+                    <ul class="lesson-list">
+                        ${c.lessons.map(l => `<li>${l}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                ${related.length > 0 ? `
+                    <div class="detail-section">
+                        <h4>🔗 相关案例</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            ${related.map(r => `
+                                <span class="tag" style="cursor: pointer;" onclick="showCaseDetail('${r.id}')">
+                                    ${r.name} (${r.year})
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div style="margin-top: 20px;">
+                    <h4>🏷️ 标签</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        ${(c.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}
                     </div>
                 </div>
             `;
+            
+            document.getElementById('detailModal').classList.add('show');
         }
         
-        // 渲染是分支
-        function renderYesBranch(fromNode, toNode) {
-            const nextNode = StartupAdvisorData.decisionTree.nodes.find(n => n.id === toNode.id);
-            const failureNode = StartupAdvisorData.decisionTree.failureNodes[toNode.id];
-            
-            let html = `<div class="tree-connector"></div>`;
-            
-            if (nextNode) {
-                html += `
-                    <div class="tree-branch">
-                        <button class="branch-label yes selected" onclick="answer('${fromNode.id}', 'yes', '${nextNode.id}')">是 ✓</button>
-                    </div>
-                    <div class="tree-connector"></div>
-                    <div class="tree-branch">
-                        ${renderQuestionNode(nextNode)}
-                    </div>
-                `;
-            }
-            
-            return html;
+        // 关闭详情
+        function closeDetail() {
+            document.getElementById('detailModal').classList.remove('show');
         }
         
-        // 渲染否分支
-        function renderNoBranch(fromNode, failureNode) {
-            let html = `<div class="tree-connector"></div>`;
-            
-            html += `
-                <div class="tree-branch">
-                    <button class="branch-label no selected" onclick="showFailure('${fromNode.id}')">否 ✗</button>
-                </div>
-            `;
-            
-            return html;
+        // 辅助函数
+        function getStatusText(status) {
+            return { failed: '已失败', acquired: '被收购', struggling: '挣扎中' }[status] || status;
         }
         
-        // 选择节点
-        function selectNode(nodeId) {
-            currentNode = nodeId;
-            // 可以添加视觉反馈
-            document.querySelectorAll('.node-content').forEach(n => n.classList.remove('selected'));
-            event.target.closest('.node-content')?.classList.add('selected');
+        function getStageText(stage) {
+            return { concept: '概念期', mvp: 'MVP期', growth: '成长期', scale: '规模化期' }[stage] || stage;
         }
         
-        // 回答问题
-        function answer(nodeId, type, nextNodeId) {
-            selectedAnswers[nodeId] = type;
-            
-            if (type === 'yes') {
-                score += 2;
-                // 显示下一节点
-                const container = document.getElementById('treeContainer');
-                // 简化：直接跳转到结果
-            } else {
-                score += 0;
-                // 显示失败结果
-                showFailure(nodeId);
-            }
-        }
+        // ============================================
+        // 自测问卷
+        // ============================================
+        const quizQuestions = [
+            { q: '你的产品是否解决了真实的问题？', hint: '用户是否真的需要这个解决方案？' },
+            { q: '目标市场规模(TAM)是否足够大？', hint: '是否有足够的增长空间？' },
+            { q: '是否找到了产品市场契合(PMF)？', hint: '用户留存和推荐率是否达标？' },
+            { q: '单位经济模型(LTV/CAC)是否健康？', hint: 'LTV/CAC > 3，回收期 < 12个月？' },
+            { q: '团队能力是否互补且稳定？', hint: '技术+商业+运营是否兼备？' },
+            { q: 'Runway是否超过12个月？', hint: '资金能否支撑到下一轮融资？' }
+        ];
         
-        // 显示失败结果
-        function showFailure(nodeId) {
-            const question = StartupAdvisorData.decisionTree.nodes.find(n => n.id === nodeId);
-            const failKey = 'fail-' + (nodeId === 'q1' ? 'pseudo' : 
-                                          nodeId === 'q2' ? 'tam' : 
-                                          nodeId === 'q3' ? 'pmf' : 
-                                          nodeId === 'q4' ? 'unit' : 
-                                          nodeId === 'q5' ? 'team' : 'runway');
-            const failure = StartupAdvisorData.decisionTree.failureNodes[failKey];
-            
-            if (failure) {
-                document.getElementById('modalTitle').textContent = failure.title;
-                document.getElementById('modalBody').innerHTML = `
-                    <div class="result-icon" style="text-align: center; font-size: 3rem;">${failure.icon}</div>
-                    <p style="margin-bottom: 20px;">${failure.description}</p>
-                    
-                    <div style="background: var(--bg-card); padding: 15px; border-radius: 8px;">
-                        <h4 style="margin-bottom: 10px;">📋 建议措施</h4>
-                        <ul style="padding-left: 20px;">
-                            ${failure.recommendations.map(r => `<li style="margin-bottom: 8px;">${r}</li>`).join('')}
-                        </ul>
-                    </div>
-                `;
-                document.getElementById('modal').classList.add('show');
-            }
-        }
-        
-        // 初始化问卷
         function initQuiz() {
             const progress = document.getElementById('quizProgress');
-            const questions = StartupAdvisorData.decisionTree.nodes;
-            
-            progress.innerHTML = questions.map((_, i) => 
-                `<div class="quiz-step" id="step${i}"></div>`
+            progress.innerHTML = quizQuestions.map((_, i) => 
+                `<div class="quiz-step" id="qs${i}"></div>`
             ).join('');
-            
-            updateQuizStep();
+            updateQuiz();
         }
         
-        // 更新问卷步骤
-        function updateQuizStep() {
-            const questions = StartupAdvisorData.decisionTree.nodes;
-            
-            // 更新进度
-            document.querySelectorAll('.quiz-step').forEach((step, i) => {
-                step.classList.remove('current', 'completed');
-                if (i < quizStep) step.classList.add('completed');
-                if (i === quizStep) step.classList.add('current');
+        function updateQuiz() {
+            document.querySelectorAll('.quiz-step').forEach((s, i) => {
+                s.classList.remove('current', 'completed');
+                if (i < quizStep) s.classList.add('completed');
+                if (i === quizStep) s.classList.add('current');
             });
             
-            if (quizStep < questions.length) {
-                const q = questions[quizStep];
-                document.getElementById('quizQuestion').textContent = q.question;
+            if (quizStep < quizQuestions.length) {
+                const q = quizQuestions[quizStep];
+                document.getElementById('quizQuestion').textContent = `${quizStep + 1}. ${q.q}`;
                 document.getElementById('quizHint').textContent = q.hint;
-                
                 document.getElementById('quizOptions').innerHTML = `
-                    <div class="quiz-option yes" onclick="selectQuizOption(this, 'yes')">是 ✓</div>
-                    <div class="quiz-option no" onclick="selectQuizOption(this, 'no')">否 ✗</div>
+                    <div class="quiz-option yes" onclick="answerQuiz('yes')">✓ 是</div>
+                    <div class="quiz-option no" onclick="answerQuiz('no')">✗ 否</div>
                 `;
-                
                 document.getElementById('quizContent').style.display = 'block';
                 document.getElementById('quizResult').style.display = 'none';
             } else {
@@ -546,101 +607,68 @@
             }
         }
         
-        // 选择问卷选项
-        function selectQuizOption(el, type) {
+        function answerQuiz(type) {
             document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
-            el.classList.add('selected');
+            event.target.classList.add('selected', type);
             
-            if (type === 'yes') {
-                score += 2;
-            }
+            if (type === 'yes') quizScore += 2;
             
             setTimeout(() => {
                 quizStep++;
-                updateQuizStep();
+                updateQuiz();
             }, 500);
         }
         
-        // 显示问卷结果
         function showQuizResult() {
             document.getElementById('quizContent').style.display = 'none';
             const resultDiv = document.getElementById('quizResult');
             resultDiv.style.display = 'block';
             
-            const maxScore = StartupAdvisorData.decisionTree.nodes.length * 2;
-            const percentage = (score / maxScore) * 100;
+            const maxScore = quizQuestions.length * 2;
+            const pct = (quizScore / maxScore) * 100;
             
-            let icon, status, message, recommendations;
-            
-            if (percentage >= 80) {
-                icon = '🎉';
-                status = '✅ 项目健康';
-                message = '你的创业项目处于健康状态，继续保持！';
-                recommendations = [
-                    '关注规模化挑战',
-                    '建立竞争壁垒',
-                    '持续监控关键指标'
-                ];
-            } else if (percentage >= 50) {
-                icon = '⚠️';
-                status = '⚠️ 需要关注';
-                message = '存在一些风险点，建议重点关注薄弱环节。';
-                recommendations = [
-                    '识别核心问题',
-                    '制定改进计划',
-                    '定期复盘'
-                ];
+            let icon, status, msg, tips;
+            if (pct >= 80) {
+                icon = '🎉'; status = '✅ 项目健康'; 
+                msg = '你的创业项目处于健康状态，继续保持！';
+                tips = ['关注规模化挑战', '建立竞争壁垒', '持续监控关键指标'];
+            } else if (pct >= 50) {
+                icon = '⚠️'; status = '⚠️ 需要关注';
+                msg = '存在一些风险点，建议重点关注薄弱环节。';
+                tips = ['识别核心问题', '制定改进计划', '定期复盘'];
             } else {
-                icon = '🚨';
-                status = '🚨 高风险';
-                message = '多个维度存在问题，需要立即干预。';
-                recommendations = [
-                    '优先解决核心问题',
-                    '寻求导师或顾问帮助',
-                    '考虑战略调整'
-                ];
+                icon = '🚨'; status = '🚨 高风险';
+                msg = '多个维度存在问题，需要立即干预。';
+                tips = ['优先解决核心问题', '寻求导师帮助', '考虑战略调整'];
             }
             
             resultDiv.innerHTML = `
                 <div class="result-icon">${icon}</div>
                 <div class="result-title">${status}</div>
-                <div class="result-score">${score}/${maxScore} (${percentage.toFixed(0)}%)</div>
-                <div class="result-message">${message}</div>
-                
-                <div class="result-recommendations">
-                    <h4>📋 下一步建议</h4>
-                    <ul>
-                        ${recommendations.map(r => `<li>${r}</li>`).join('')}
+                <div class="result-score">${quizScore}/${maxScore}</div>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">${msg}</p>
+                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; text-align: left;">
+                    <h4 style="margin-bottom: 10px;">📋 下一步建议</h4>
+                    <ul style="color: var(--text-muted); padding-left: 20px;">
+                        ${tips.map(t => `<li style="margin-bottom: 6px;">${t}</li>`).join('')}
                     </ul>
                 </div>
-                
-                <button class="btn btn-accent" onclick="resetQuiz()" style="margin-top: 20px;">
-                    🔄 重新测试
-                </button>
+                <button class="btn btn-accent" onclick="resetQuiz()" style="margin-top: 20px;">🔄 重新测试</button>
             `;
         }
         
-        // 重置问卷
         function resetQuiz() {
             quizStep = 0;
-            score = 0;
-            selectedAnswers = {};
-            updateQuizStep();
+            quizScore = 0;
+            updateQuiz();
         }
         
-        // 关闭弹窗
-        function closeModal() {
-            document.getElementById('modal').classList.remove('show');
-        }
-        
-        // 点击背景关闭
-        document.getElementById('modal')?.addEventListener('click', (e) => {
-            if (e.target.id === 'modal') closeModal();
+        // 弹窗关闭
+        document.getElementById('detailModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'detailModal') closeDetail();
         });
-        
-        // ESC 关闭
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') closeDetail();
         });
     </script>
 </body>
