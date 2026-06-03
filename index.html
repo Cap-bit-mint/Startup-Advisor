@@ -16,43 +16,51 @@
         .stat-label { font-size: 0.85rem; color: #8892b0; margin-top: 5px; }
         .filters { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1); }
         .filters h3 { margin-bottom: 15px; }
-        .filter-row { display: flex; gap: 15px; flex-wrap: wrap; }
+        .filter-row { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
         select, input { padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: #1a1a2e; color: #fff; min-width: 150px; }
         input { min-width: 200px; }
+        .lang-toggle { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+        .lang-toggle label { font-size: 0.9rem; color: #8892b0; }
+        .lang-toggle select { min-width: 100px; background: #16213e; }
         .cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
         .case-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.3s; }
         .case-card:hover { border-color: #64ffda; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(100,255,218,0.15); }
-        .case-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .case-name { font-size: 1.1rem; font-weight: 700; }
+        .case-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
         .case-id { font-size: 0.75rem; color: #8892b0; }
-        .case-sector { font-size: 0.85rem; color: #64ffda; margin-bottom: 8px; }
+        .case-sector { font-size: 0.85rem; color: #64ffda; margin: 8px 0; }
         .case-burn { font-size: 0.9rem; color: #e94560; margin-bottom: 8px; }
-        .case-analysis { font-size: 0.85rem; color: #8892b0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .case-analysis { font-size: 0.85rem; color: #ccd6f6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
         .loading { text-align: center; padding: 40px; color: #8892b0; }
         
         /* 模态框 */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal.show { display: flex; }
-        .modal-content { background: #16213e; border-radius: 16px; max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; overflow-y: auto; padding: 40px 20px; }
+        .modal.show { display: block; }
+        .modal-content { background: #16213e; border-radius: 16px; max-width: 700px; margin: 0 auto; padding: 30px; border: 1px solid rgba(255,255,255,0.1); }
         .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .modal-title { font-size: 1.5rem; font-weight: 700; }
-        .modal-close { background: none; border: none; color: #8892b0; font-size: 1.5rem; cursor: pointer; padding: 5px 10px; }
+        .modal-close { background: none; border: none; color: #8892b0; font-size: 1.5rem; cursor: pointer; }
         .modal-close:hover { color: #fff; }
-        .modal-section { margin-bottom: 20px; }
-        .modal-section h4 { color: #64ffda; margin-bottom: 10px; font-size: 1rem; }
-        .modal-section p { color: #ccd6f6; line-height: 1.6; }
-        .modal-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .modal-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
         .meta-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; }
         .meta-label { font-size: 0.75rem; color: #8892b0; margin-bottom: 4px; }
         .meta-value { font-size: 1rem; font-weight: 600; }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section h4 { color: #64ffda; margin-bottom: 10px; font-size: 1rem; }
+        .modal-section p { color: #ccd6f6; line-height: 1.7; }
         
-        @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+        /* 双语对照 */
+        .bilingual { margin-bottom: 10px; }
+        .bilingual .zh { color: #fff; margin-bottom: 5px; }
+        .bilingual .en { color: #8892b0; font-size: 0.9em; font-style: italic; padding-left: 15px; border-left: 2px solid #3498db; }
+        
+        .translating { color: #f39c12; font-size: 0.8rem; }
+        @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } .modal-meta { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Startup-Advisor 案例数据库</h1>
-        <p class="subtitle">基于 loot-drop.io 的失败创业公司案例分析 | 共 1268 个案例</p>
+        <p class="subtitle">失败创业公司案例分析 | 共 <span id="totalCount">0</span> 个案例</p>
         
         <div class="stats">
             <div class="stat-card"><div class="stat-value" id="totalCases">-</div><div class="stat-label">案例总数</div></div>
@@ -62,11 +70,19 @@
         </div>
         
         <div class="filters">
-            <h3>🔍 筛选案例</h3>
             <div class="filter-row">
+                <h3>🔍 筛选</h3>
                 <input type="text" id="searchInput" placeholder="搜索公司名..." oninput="filterCases()">
                 <select id="sectorFilter" onchange="filterCases()"><option value="">全部行业</option></select>
                 <select id="hasAnalysisFilter" onchange="filterCases()"><option value="">全部</option><option value="yes">含深度分析</option></select>
+                <div class="lang-toggle">
+                    <label>语言:</label>
+                    <select id="langSelect" onchange="setLanguage(this.value)">
+                        <option value="zh">中文</option>
+                        <option value="en">English</option>
+                        <option value="both">双语对照</option>
+                    </select>
+                </div>
             </div>
         </div>
         
@@ -75,7 +91,7 @@
     </div>
     
     <!-- 详情模态框 -->
-    <div class="modal" id="caseModal">
+    <div class="modal" id="caseModal" onclick="if(event.target===this)closeModal()">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title" id="modalTitle">案例详情</div>
@@ -86,19 +102,55 @@
     </div>
 
     <script>
+    // 翻译缓存
+    const transCache = {};
     let allCases = [];
-    
+    let currentLang = 'zh';
+
+    // 简单翻译函数（使用 MyMemory API）
+    async function translate(text, targetLang = 'zh') {
+        if (!text || targetLang === 'en') return text;
+        if (transCache[text]) return transCache[text];
+        
+        try {
+            const encoded = encodeURIComponent(text.slice(0, 500));
+            const resp = await fetch(`https://api.mymemory.translated.net/get?q=${encoded}&langpair=en|${targetLang}`);
+            const data = await resp.json();
+            if (data.responseStatus === 200 && data.responseData?.translatedText) {
+                const result = data.responseData.translatedText;
+                transCache[text] = result;
+                return result;
+            }
+        } catch (e) {}
+        return text;
+    }
+
+    // 翻译案例卡片内容
+    async function translateCase(case, targetLang = 'zh') {
+        if (targetLang === 'en') return case;
+        
+        const t = {};
+        for (const key of ['name', 'sector', 'failure_analysis', 'market_analysis']) {
+            if (case[key]) {
+                t[key] = await translate(case[key], targetLang);
+                await new Promise(r => setTimeout(r, 100));
+            } else {
+                t[key] = case[key];
+            }
+        }
+        return { ...case, ...t };
+    }
+
+    // 加载数据
     fetch('docs/data/cases.json')
         .then(r => r.json())
         .then(data => {
             allCases = data.cases;
+            document.getElementById('totalCount').textContent = allCases.length;
             updateStats();
             populateFilters();
             filterCases();
             document.getElementById('loading').style.display = 'none';
-        })
-        .catch(e => {
-            document.getElementById('loading').textContent = '加载失败: ' + e.message;
         });
 
     function updateStats() {
@@ -106,7 +158,6 @@
             const match = c.total_cash_burned?.match(/[\d.]+/);
             return sum + (match ? parseFloat(match[0]) : 0);
         }, 0);
-        
         const burnedStr = totalBurned > 1000 ? `$${(totalBurned/1000).toFixed(1)}B` : `$${totalBurned.toFixed(0)}M`;
         const sectors = [...new Set(allCases.map(c => c.sector).filter(Boolean))];
         const withAnalysis = allCases.filter(c => c.failure_analysis || c.market_analysis).length;
@@ -123,12 +174,12 @@
         sectors.forEach(s => select.innerHTML += `<option value="${s}">${s}</option>`);
     }
 
-    function filterCases() {
+    async function filterCases() {
         const search = document.getElementById('searchInput').value.toLowerCase();
         const sector = document.getElementById('sectorFilter').value;
         const hasAnalysis = document.getElementById('hasAnalysisFilter').value;
         
-        const filtered = allCases.filter(c => {
+        let filtered = allCases.filter(c => {
             if (search && !c.name?.toLowerCase().includes(search)) return false;
             if (sector && c.sector !== sector) return false;
             if (hasAnalysis === 'yes' && !c.failure_analysis && !c.market_analysis) return false;
@@ -136,75 +187,80 @@
         });
         
         const grid = document.getElementById('casesGrid');
-        grid.innerHTML = filtered.slice(0, 100).map(c => `
-            <div class="case-card" onclick="showCaseDetail(${c.id})">
-                <div class="case-header">
-                    <div>
-                        <div class="case-name">${c.name || 'N/A'}</div>
-                        <div class="case-id">#${c.id}</div>
-                    </div>
-                </div>
-                ${c.sector ? `<div class="case-sector">${c.sector}</div>` : ''}
-                ${c.total_cash_burned ? `<div class="case-burn">💸 ${c.total_cash_burned}</div>` : ''}
-                ${c.failure_analysis ? `<div class="case-analysis">${c.failure_analysis?.slice(0, 200)}...</div>` : ''}
-            </div>
-        `).join('');
+        grid.innerHTML = '';
         
-        if (filtered.length > 100) {
-            grid.innerHTML += `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#8892b0;">显示前100个结果，共 ${filtered.length} 个</div>`;
+        for (const c of filtered.slice(0, 50)) {
+            const tc = await translateCase(c, currentLang);
+            const name = tc.name || c.name || 'N/A';
+            const sector = tc.sector || c.sector || '';
+            const burn = c.total_cash_burned || '';
+            const analysis = tc.failure_analysis || c.failure_analysis || '';
+            const analysisEn = currentLang === 'both' ? (c.failure_analysis || '') : '';
+            
+            let analysisHtml = '';
+            if (analysis) {
+                if (currentLang === 'both' && analysisEn) {
+                    analysisHtml = `<div class="bilingual"><div class="zh">${analysis.slice(0, 150)}...</div><div class="en">${analysisEn.slice(0, 150)}...</div></div>`;
+                } else {
+                    analysisHtml = `<div class="case-analysis">${analysis.slice(0, 150)}...</div>`;
+                }
+            }
+            
+            grid.innerHTML += `
+                <div class="case-card" onclick="showCaseDetail(${c.id})">
+                    <div class="case-name">${name}</div>
+                    <div class="case-id">#${c.id}</div>
+                    ${sector ? `<div class="case-sector">${sector}</div>` : ''}
+                    ${burn ? `<div class="case-burn">💸 ${burn}</div>` : ''}
+                    ${analysisHtml}
+                </div>`;
+        }
+        
+        if (filtered.length > 50) {
+            grid.innerHTML += `<div style="grid-column:1/-1;text-align:center;padding:20px;color:#8892b0;">显示前50个结果，共 ${filtered.length} 个</div>`;
         }
     }
 
-    function showCaseDetail(id) {
+    async function showCaseDetail(id) {
         const c = allCases.find(x => x.id === id);
         if (!c) return;
         
-        document.getElementById('modalTitle').textContent = c.name || '案例详情';
-        document.getElementById('modalBody').innerHTML = `
-            <div class="modal-meta">
-                ${c.sector ? `<div class="meta-item"><div class="meta-label">行业</div><div class="meta-value">${c.sector}</div></div>` : ''}
-                ${c.total_cash_burned ? `<div class="meta-item"><div class="meta-label">烧钱总额</div><div class="meta-value">${c.total_cash_burned}</div></div>` : ''}
-                ${c.founding_year ? `<div class="meta-item"><div class="meta-label">成立年份</div><div class="meta-value">${c.founding_year}</div></div>` : ''}
-                ${c.end_year ? `<div class="meta-item"><div class="meta-label">倒闭年份</div><div class="meta-value">${c.end_year}</div></div>` : ''}
-            </div>
-            
-            ${c.failure_analysis ? `
-            <div class="modal-section">
-                <h4>📉 失败分析</h4>
-                <p>${c.failure_analysis}</p>
-            </div>` : ''}
-            
-            ${c.market_analysis ? `
-            <div class="modal-section">
-                <h4>📊 市场分析</h4>
-                <p>${c.market_analysis}</p>
-            </div>` : ''}
-            
-            ${c.startup_learnings ? `
-            <div class="modal-section">
-                <h4>📚 创业教训</h4>
-                <p>${c.startup_learnings}</p>
-            </div>` : ''}
-            
-            ${c.scalability ? `
-            <div class="modal-section">
-                <h4>📈 可扩展性</h4>
-                <p>${c.scalability}</p>
-            </div>` : ''}
-            
-            ${c.pivot_concept ? `
-            <div class="modal-section">
-                <h4>🔄 转型建议</h4>
-                <p>${c.pivot_concept}</p>
-            </div>` : ''}
-            
-            ${c.description ? `
-            <div class="modal-section">
-                <h4>📝 描述</h4>
-                <p>${c.description}</p>
-            </div>` : ''}
-        `;
+        const tc = await translateCase(c, currentLang);
+        const name = tc.name || c.name || '案例详情';
+        const sector = tc.sector || c.sector || '';
         
+        document.getElementById('modalTitle').textContent = name;
+        
+        let bodyHtml = `<div class="modal-meta">`;
+        if (c.sector || sector) bodyHtml += `<div class="meta-item"><div class="meta-label">行业</div><div class="meta-value">${sector || c.sector}</div></div>`;
+        if (c.total_cash_burned) bodyHtml += `<div class="meta-item"><div class="meta-label">烧钱总额</div><div class="meta-value">${c.total_cash_burned}</div></div>`;
+        if (c.founding_year) bodyHtml += `<div class="meta-item"><div class="meta-label">成立年份</div><div class="meta-value">${c.founding_year}</div></div>`;
+        if (c.end_year) bodyHtml += `<div class="meta-item"><div class="meta-label">倒闭年份</div><div class="meta-value">${c.end_year}</div></div>`;
+        bodyHtml += `</div>`;
+        
+        const sections = [
+            ['failure_analysis', '📉 失败分析'],
+            ['market_analysis', '📊 市场分析'],
+            ['startup_learnings', '📚 创业教训'],
+            ['scalability', '📈 可扩展性'],
+            ['pivot_concept', '🔄 转型建议']
+        ];
+        
+        for (const [field, label] of sections) {
+            if (c[field]) {
+                const zh = tc[field] || '';
+                const en = c[field] || '';
+                
+                if (currentLang === 'both') {
+                    bodyHtml += `<div class="modal-section"><h4>${label}</h4><div class="bilingual">${zh ? `<div class="zh">${zh}</div>` : ''}<div class="en">${en}</div></div></div>`;
+                } else {
+                    const content = tc[field] || c[field] || '';
+                    bodyHtml += `<div class="modal-section"><h4>${label}</h4><p>${content}</p></div>`;
+                }
+            }
+        }
+        
+        document.getElementById('modalBody').innerHTML = bodyHtml;
         document.getElementById('caseModal').classList.add('show');
     }
 
@@ -212,15 +268,12 @@
         document.getElementById('caseModal').classList.remove('show');
     }
 
-    // 点击背景关闭
-    document.getElementById('caseModal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-    
-    // ESC 关闭
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
-    });
+    function setLanguage(lang) {
+        currentLang = lang;
+        filterCases();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     </script>
 </body>
 </html>
