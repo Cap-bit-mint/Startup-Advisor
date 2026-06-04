@@ -112,6 +112,7 @@
     const transCache = {};
     let allCases = [];
     let currentLang = 'zh';
+    let currentModalCaseId = null;
 
     // 简单翻译函数（使用 MyMemory API）
     async function translate(text, targetLang = 'zh') {
@@ -287,16 +288,22 @@
         }
         
         document.getElementById('modalBody').innerHTML = bodyHtml;
+        currentModalCaseId = id;
         document.getElementById('caseModal').classList.add('show');
     }
 
     function closeModal() {
+        currentModalCaseId = null;
         document.getElementById('caseModal').classList.remove('show');
     }
 
     function setLanguage(lang) {
         currentLang = lang;
         filterCases();
+        // Re-render modal if open with new language
+        if (currentModalCaseId !== null) {
+            showCaseDetail(currentModalCaseId);
+        }
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
