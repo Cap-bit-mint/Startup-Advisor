@@ -126,11 +126,13 @@
     }
 
     // 翻译案例卡片内容
+    // 注意：name（品牌名）和 sector（行业）是专有名词，不翻译
     async function translateCase(c, targetLang = 'zh') {
         if (targetLang === 'en') return c;
         
         const t = {};
-        for (const key of ['name', 'sector', 'failure_analysis', 'market_analysis']) {
+        // 只翻译描述性内容：失败分析、市场分析、创业教训等
+        for (const key of ['failure_analysis', 'market_analysis', 'startup_learnings', 'scalability', 'pivot_concept']) {
             if (c[key]) {
                 t[key] = await translate(c[key], targetLang);
                 await new Promise(r => setTimeout(r, 100));
@@ -138,6 +140,9 @@
                 t[key] = c[key];
             }
         }
+        // name 和 sector 保持原始英文，不翻译
+        t.name = c.name;
+        t.sector = c.sector;
         return { ...c, ...t };
     }
 
