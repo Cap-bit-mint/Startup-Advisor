@@ -150,7 +150,7 @@
         // name 和 sector 保持原始英文，不翻译
         t.name = c.name;
         t.sector = c.sector;
-        return { ...t, ...c };
+        return { ...c, ...t };
     }
 
     // 加载数据
