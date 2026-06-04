@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风险评估 - Startup-Advisor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #fff; min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .nav { display: flex; gap: 20px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .nav a { color: #8892b0; text-decoration: none; padding: 10px 20px; border-radius: 8px; transition: all 0.3s; }
+        .nav a:hover, .nav a.active { color: #fff; background: rgba(100,255,218,0.1); }
+        .nav a.active { border-bottom: 2px solid #64ffda; }
+        h1 { font-size: 2rem; margin-bottom: 10px; background: linear-gradient(90deg, #ffc107, #ff9800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: #8892b0; margin-bottom: 40px; }
+        
+        .card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .card h2 { font-size: 1.3rem; margin-bottom: 15px; color: #64ffda; }
+        .card h3 { font-size: 1.1rem; margin: 20px 0 10px; color: #fff; }
+        
+        .question { margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+        .question-label { font-weight: 600; margin-bottom: 10px; color: #fff; }
+        .question-desc { font-size: 0.85rem; color: #8892b0; margin-bottom: 12px; }
+        
+        .scale { display: flex; gap: 10px; flex-wrap: wrap; }
+        .scale-btn { padding: 8px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: #8892b0; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; }
+        .scale-btn:hover { border-color: #64ffda; color: #fff; }
+        .scale-btn.selected { background: #64ffda; color: #1a1a2e; border-color: #64ffda; font-weight: 600; }
+        
+        .result-card { background: linear-gradient(135deg, rgba(100,255,218,0.1), rgba(52,152,219,0.1)); border: 2px solid #64ffda; }
+        .result-card h2 { color: #fff; font-size: 1.5rem; }
+        .risk-score { font-size: 4rem; font-weight: 700; text-align: center; margin: 20px 0; }
+        .risk-low { color: #64ffda; }
+        .risk-medium { color: #ffc107; }
+        .risk-high { color: #e94560; }
+        .risk-level { text-align: center; font-size: 1.2rem; padding: 10px 20px; border-radius: 8px; display: inline-block; margin: 10px auto; }
+        .level-low { background: rgba(100,255,218,0.2); color: #64ffda; }
+        .level-medium { background: rgba(255,193,7,0.2); color: #ffc107; }
+        .level-high { background: rgba(233,69,96,0.2); color: #e94560; }
+        
+        .dimensions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .dim-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center; }
+        .dim-name { font-size: 0.85rem; color: #8892b0; margin-bottom: 5px; }
+        .dim-score { font-size: 1.5rem; font-weight: 700; }
+        .dim-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 8px; }
+        .dim-fill { height: 100%; border-radius: 2px; }
+        .fill-low { background: #64ffda; }
+        .fill-medium { background: #ffc107; }
+        .fill-high { background: #e94560; }
+        
+        .recommendation { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .recommendation h4 { color: #64ffda; margin-bottom: 10px; }
+        .recommendation ul { margin-left: 20px; color: #ccd6f6; }
+        .recommendation li { margin: 5px 0; }
+        
+        .reset-btn { display: block; margin: 20px auto; padding: 12px 30px; background: transparent; border: 1px solid #64ffda; color: #64ffda; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .reset-btn:hover { background: #64ffda; color: #1a1a2e; }
+        
+        .guide { margin-top: 40px; }
+        .guide h2 { color: #64ffda; margin-bottom: 20px; }
+        .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .guide-card { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 20px; text-align: center; }
+        .guide-card h4 { margin-bottom: 10px; }
+        .guide-card p { font-size: 0.85rem; color: #ccd6f6; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #8892b0; font-weight: 500; }
+        .weight { color: #64ffda; font-weight: 600; }
+        
+        .warning-signs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .sign-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px; }
+        .sign-icon { font-size: 1.2rem; }
+        .sign-text { font-size: 0.9rem; color: #ccd6f6; }
+        
+        @media (max-width: 768px) {
+            .dimensions { grid-template-columns: repeat(2, 1fr); }
+            .guide-grid { grid-template-columns: 1fr; }
+            .warning-signs { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="index.html">📊 案例数据库</a>
+            <a href="failure-matrix.html">🔴 失败矩阵</a>
+            <a href="decision-tree.html">🌲 决策树</a>
+            <a href="risk-assessment.html" class="active">⚡ 风险评估</a>
+        </nav>
+        
+        <h1>风险评估</h1>
+        <p class="subtitle">系统性评估创业项目风险，量化决策依据</p>
+        
+        <div class="card" id="assessmentForm">
+            <h2>📋 风险自测问卷</h2>
+            <p style="color:#8892b0;margin-bottom:20px;">根据实际情况选择最符合的选项，系统将自动计算风险评分</p>
+            
+            <h3>🏢 市场风险</h3>
+            
+            <div class="question" data-dim="market">
+                <div class="question-label">Q1: 目标市场规模(TAM)是否明确？</div>
+                <div class="question-desc">评估你对目标市场的理解和量化能力</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q1" data-val="1">1 - 已验证 (TAM>$1B)</button>
+                    <button class="scale-btn" data-q="q1" data-val="2">2 - 已估算</button>
+                    <button class="scale-btn" data-q="q1" data-val="3">3 - 待验证</button>
+                    <button class="scale-btn" data-q="q1" data-val="4">4 - 模糊</button>
+                    <button class="scale-btn" data-q="q1" data-val="5">5 - 未定义</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="market">
+                <div class="question-label">Q2: 是否进行了用户验证？</div>
+                <div class="question-desc">评估用户需求的真实性和付费意愿</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q2" data-val="1">1 - 充分验证 (≥100用户)</button>
+                    <button class="scale-btn" data-q="q2" data-val="2">2 - 基本验证 (20-99用户)</button>
+                    <button class="scale-btn" data-q="q2" data-val="3">3 - 部分验证 (5-19用户)</button>
+                    <button class="scale-btn" data-q="q2" data-val="4">4 - 初步验证 (2-4用户)</button>
+                    <button class="scale-btn" data-q="q2" data-val="5">5 - 未验证</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="market">
+                <div class="question-label">Q3: 竞争格局是否清晰？</div>
+                <div class="question-desc">评估对竞争对手的了解程度</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q3" data-val="1">1 - 完全了解</button>
+                    <button class="scale-btn" data-q="q3" data-val="2">2 - 基本了解</button>
+                    <button class="scale-btn" data-q="q3" data-val="3">3 - 部分了解</button>
+                    <button class="scale-btn" data-q="q3" data-val="4">4 - 了解有限</button>
+                    <button class="scale-btn" data-q="q3" data-val="5">5 - 不了解</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="market">
+                <div class="question-label">Q4: 市场时机是否合适？</div>
+                <div class="question-desc">评估进入市场的时机选择</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q4" data-val="1">1 - 时机成熟</button>
+                    <button class="scale-btn" data-q="q4" data-val="2">2 - 时机合适</button>
+                    <button class="scale-btn" data-q="q4" data-val="3">3 - 时机一般</button>
+                    <button class="scale-btn" data-q="q4" data-val="4">4 - 时机较早</button>
+                    <button class="scale-btn" data-q="q4" data-val="5">5 - 时机错误</button>
+                </div>
+            </div>
+            
+            <h3>🛠️ 产品风险</h3>
+            
+            <div class="question" data-dim="product">
+                <div class="question-label">Q5: 是否达到PMF（产品市场契合）？</div>
+                <div class="question-desc">评估产品与市场需求的匹�程度</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q5" data-val="1">1 - 已达成 (NPS≥50)</button>
+                    <button class="scale-btn" data-q="q5" data-val="2">2 - 基本达成 (NPS 30-50)</button>
+                    <button class="scale-btn" data-q="q5" data-val="3">3 - 待确认 (NPS 10-30)</button>
+                    <button class="scale-btn" data-q="q5" data-val="4">4 - 不明显 (NPS &lt;10)</button>
+                    <button class="scale-btn" data-q="q5" data-val="5">5 - 无PMF</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="product">
+                <div class="question-label">Q6: 产品差异化是否明显？</div>
+                <div class="question-desc">评估产品的独特价值和竞争优势</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q6" data-val="1">1 - 差异化强</button>
+                    <button class="scale-btn" data-q="q6" data-val="2">2 - 差异化明确</button>
+                    <button class="scale-btn" data-q="q6" data-val="3">3 - 差异化一般</button>
+                    <button class="scale-btn" data-q="q6" data-val="4">4 - 差异化弱</button>
+                    <button class="scale-btn" data-q="q6" data-val="5">5 - 无差异化</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="product">
+                <div class="question-label">Q7: 技术债务是否可控？</div>
+                <div class="question-desc">评估技术架构的健康程度</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q7" data-val="1">1 - 债务极低</button>
+                    <button class="scale-btn" data-q="q7" data-val="2">2 - 债务可控</button>
+                    <button class="scale-btn" data-q="q7" data-val="3">3 - 债务中等</button>
+                    <button class="scale-btn" data-q="q7" data-val="4">4 - 债务较高</button>
+                    <button class="scale-btn" data-q="q7" data-val="5">5 - 债务严重</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="product">
+                <div class="question-label">Q8: 产品用户体验是否良好？</div>
+                <div class="question-desc">评估用户使用产品的便捷程度</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q8" data-val="1">1 - 体验优秀</button>
+                    <button class="scale-btn" data-q="q8" data-val="2">2 - 体验良好</button>
+                    <button class="scale-btn" data-q="q8" data-val="3">3 - 体验一般</button>
+                    <button class="scale-btn" data-q="q8" data-val="4">4 - 体验较差</button>
+                    <button class="scale-btn" data-q="q8" data-val="5">5 - 体验极差</button>
+                </div>
+            </div>
+            
+            <h3>👥 团队风险</h3>
+            
+            <div class="question" data-dim="team">
+                <div class="question-label">Q9: 创始团队是否互补？</div>
+                <div class="question-desc">评估团队成员的能力和分工</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q9" data-val="1">1 - 完全互补</button>
+                    <button class="scale-btn" data-q="q9" data-val="2">2 - 基本互补</button>
+                    <button class="scale-btn" data-q="q9" data-val="3">3 - 部分互补</button>
+                    <button class="scale-btn" data-q="q9" data-val="4">4 - 能力重叠</button>
+                    <button class="scale-btn" data-q="q9" data-val="5">5 - 严重缺失</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="team">
+                <div class="question-label">Q10: 团队稳定性如何？</div>
+                <div class="question-desc">评估核心成员的留存和协作</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q10" data-val="1">1 - 非常稳定</button>
+                    <button class="scale-btn" data-q="q10" data-val="2">2 - 基本稳定</button>
+                    <button class="scale-btn" data-q="q10" data-val="3">3 - 一般</button>
+                    <button class="scale-btn" data-q="q10" data-val="4">4 - 存在隐患</button>
+                    <button class="scale-btn" data-q="q10" data-val="5">5 - 严重不稳</button>
+                </div>
+            </div>
+            
+            <h3>💰 资金风险</h3>
+            
+            <div class="question" data-dim="finance">
+                <div class="question-label">Q11: 资金 runway 有多少？</div>
+                <div class="question-desc">评估资金能支撑运营的时间</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q11" data-val="1">1 - &gt;18个月</button>
+                    <button class="scale-btn" data-q="q11" data-val="2">2 - 12-18个月</button>
+                    <button class="scale-btn" data-q="q11" data-val="3">3 - 9-12个月</button>
+                    <button class="scale-btn" data-q="q11" data-val="4">4 - 6-9个月</button>
+                    <button class="scale-btn" data-q="q11" data-val="5">5 - &lt;6个月</button>
+                </div>
+            </div>
+            
+            <div class="question" data-dim="finance">
+                <div class="question-label">Q12: 单位经济是否健康？</div>
+                <div class="question-desc">评估LTV/CAC等核心指标</div>
+                <div class="scale">
+                    <button class="scale-btn" data-q="q12" data-val="1">1 - 非常健康 (LTV/CAC&gt;5)</button>
+                    <button class="scale-btn" data-q="q12" data-val="2">2 - 健康 (3-5)</button>
+                    <button class="scale-btn" data-q="q12" data-val="3">3 - 一般 (1.5-3)</button>
+                    <button class="scale-btn" data-q="q12" data-val="4">4 - 较差 (1-1.5)</button>
+                    <button class="scale-btn" data-q="q12" data-val="5">5 - 极差 (&lt;1)</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card result-card" id="resultCard" style="display:none;">
+            <h2>📊 风险评估结果</h2>
+            <div class="risk-score" id="totalScore">-</div>
+            <div style="text-align:center;">
+                <span class="risk-level" id="riskLevel">-</span>
+            </div>
+            
+            <h3 style="margin-top:30px;">📈 各维度风险分布</h3>
+            <div class="dimensions" id="dimensionScores"></div>
+            
+            <div class="recommendation" id="recommendation">
+                <h4>💡 建议行动</h4>
+                <ul id="recommendations"></ul>
+            </div>
+        </div>
+        
+        <button class="reset-btn" onclick="resetAssessment()">🔄 重置评估</button>
+        
+        <div class="guide">
+            <h2>📚 风险评级标准</h2>
+            <div class="guide-grid">
+                <div class="guide-card">
+                    <h4 style="color:#64ffda;">🟢 极低风险 (1.0-1.5)</h4>
+                    <p>保持现状，专注增长</p>
+                </div>
+                <div class="guide-card">
+                    <h4 style="color:#ffc107;">🟡 较低风险 (1.5-2.5)</h4>
+                    <p>关注潜在问题</p>
+                </div>
+                <div class="guide-card">
+                    <h4 style="color:#ff9800;">🟠 中等风险 (2.5-3.5)</h4>
+                    <p>制定改进计划</p>
+                </div>
+            </div>
+            <div class="guide-grid" style="margin-top:15px;">
+                <div class="guide-card">
+                    <h4 style="color:#ff5722;">🟠 较高风险 (3.5-4.5)</h4>
+                    <p>立即采取行动</p>
+                </div>
+                <div class="guide-card">
+                    <h4 style="color:#e94560;">🔴 极高风险 (4.5-5.0)</h4>
+                    <p>止损优先，考虑转型或退出</p>
+                </div>
+            </div>
+            
+            <h2 style="margin-top:40px;">⚠️ 危险信号清单</h2>
+            <div class="warning-signs">
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">用户留存率 &lt; 20%，自然增长 &lt; 10%</span></div>
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">Runway &lt; 6个月，下一轮无着落</span></div>
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">核心创始人或CTO�出离职</span></div>
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">LTV/CAC &lt; 1，获客成本持续上升</span></div>
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">大客户流失，前3客户占比 &gt; 50%</span></div>
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">主要竞争对手发布类似产品</span></div>
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">NPS &lt; 0，负面口碑扩散</span></div>
+                <div class="sign-item"><span class="sign-icon">🚩</span><span class="sign-text">技术债务严重，Bug频发</span></div>
+            </div>
+            
+            <h2 style="margin-top:40px;">📋 维度权重配置</h2>
+            <table>
+                <tr><th>维度</th><th class="weight">权重</th><th>说明</th></tr>
+                <tr><td>市场风险</td><td class="weight">25%</td><td>需求验证、竞争格局、进入时机</td></tr>
+                <tr><td>产品风险</td><td class="weight">35%</td><td>PMF达成、差异化、技术健康度</td></tr>
+                <tr><td>团队风险</td><td class="weight">20%</td><td>能力互补、稳定性、文化</td></tr>
+                <tr><td>资金风险</td><td class="weight">20%</td><td>Runway、单位经济、融资能力</td></tr>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+    const answers = {};
+    const dimensionWeights = { market: 0.25, product: 0.35, team: 0.20, finance: 0.20 };
+    
+    document.querySelectorAll('.scale-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const q = this.dataset.q;
+            const val = parseInt(this.dataset.val);
+            
+            // Remove selection from same question
+            document.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            answers[q] = val;
+            calculateRisk();
+        });
+    });
+    
+    function calculateRisk() {
+        if (Object.keys(answers).length < 12) return;
+        
+        // Calculate dimension scores
+        const dimensions = {
+            market: (answers.q1 + answers.q2 + answers.q3 + answers.q4) / 4,
+            product: (answers.q5 + answers.q6 + answers.q7 + answers.q8) / 4,
+            team: (answers.q9 + answers.q10) / 2,
+            finance: (answers.q11 + answers.q12) / 2
+        };
+        
+        // Calculate weighted total
+        const total = dimensions.market * dimensionWeights.market +
+                      dimensions.product * dimensionWeights.product +
+                      dimensions.team * dimensionWeights.team +
+                      dimensions.finance * dimensionWeights.finance;
+        
+        // Update result display
+        const resultCard = document.getElementById('resultCard');
+        resultCard.style.display = 'block';
+        
+        const scoreEl = document.getElementById('totalScore');
+        scoreEl.textContent = total.toFixed(1);
+        scoreEl.className = 'risk-score ' + getScoreClass(total);
+        
+        const levelEl = document.getElementById('riskLevel');
+        levelEl.textContent = getLevelText(total);
+        levelEl.className = 'risk-level ' + getLevelClass(total);
+        
+        // Update dimension display
+        const dimContainer = document.getElementById('dimensionScores');
+        dimContainer.innerHTML = '';
+        
+        const dimNames = { market: '市场', product: '产品', team: '团队', finance: '资金' };
+        
+        for (const [dim, score] of Object.entries(dimensions)) {
+            const item = document.createElement('div');
+            item.className = 'dim-item';
+            item.innerHTML = `
+                <div class="dim-name">${dimNames[dim]}</div>
+                <div class="dim-score ${getScoreClass(score)}">${score.toFixed(1)}</div>
+                <div class="dim-bar"><div class="dim-fill ${getScoreClass(score)}" style="width:${score*20}%"></div></div>
+            `;
+            dimContainer.appendChild(item);
+        }
+        
+        // Update recommendations
+        const recList = document.getElementById('recommendations');
+        recList.innerHTML = '';
+        
+        const recommendations = getRecommendations(dimensions);
+        recommendations.forEach(rec => {
+            const li = document.createElement('li');
+            li.textContent = rec;
+            recList.appendChild(li);
+        });
+        
+        // Scroll to result
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    function getScoreClass(score) {
+        if (score <= 2) return 'risk-low';
+        if (score <= 3.5) return 'risk-medium';
+        return 'risk-high';
+    }
+    
+    function getLevelClass(score) {
+        if (score <= 2) return 'level-low';
+        if (score <= 3.5) return 'level-medium';
+        return 'level-high';
+    }
+    
+    function getLevelText(score) {
+        if (score <= 1.5) return '🟢 极低风险';
+        if (score <= 2.5) return '🟡 较低风险';
+        if (score <= 3.5) return '🟠 中等风险';
+        if (score <= 4.5) return '🟠 较高风险';
+        return '🔴 极高风险';
+    }
+    
+    function getRecommendations(dims) {
+        const recs = [];
+        
+        if (dims.market > 3) {
+            recs.push('⚠️ 市场风险较高：建议优先进行用户调研和竞品分析');
+        }
+        if (dims.product > 3) {
+            recs.push('⚠️ 产品风险较高：聚焦核心功能，暂缓新功能开发');
+        }
+        if (dims.team > 3) {
+            recs.push('⚠️ 团队风险较高：解决内部问题，确保核心成员稳定');
+        }
+        if (dims.finance > 3) {
+            recs.push('⚠️ 资金风险较高：立即启动融资或削减开支');
+        }
+        
+        if (dims.market > 4 || dims.product > 4 || dims.finance > 4) {
+            recs.push('🚨 检测到极高风险维度，建议进行深度复盘');
+        }
+        
+        if (recs.length === 0) {
+            recs.push('✅ 各维度风险可控，继续执行当前计划');
+        }
+        
+        return recs;
+    }
+    
+    function resetAssessment() {
+        Object.keys(answers).forEach(k => delete answers[k]);
+        document.querySelectorAll('.scale-btn').forEach(btn => btn.classList.remove('selected'));
+        document.getElementById('resultCard').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    </script>
+</body>
+</html>

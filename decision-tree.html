@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>决策树 - Startup-Advisor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #fff; min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .nav { display: flex; gap: 20px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .nav a { color: #8892b0; text-decoration: none; padding: 10px 20px; border-radius: 8px; transition: all 0.3s; }
+        .nav a:hover, .nav a.active { color: #fff; background: rgba(100,255,218,0.1); }
+        .nav a.active { border-bottom: 2px solid #64ffda; }
+        h1 { font-size: 2rem; margin-bottom: 10px; background: linear-gradient(90deg, #64ffda, #3498db); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: #8892b0; margin-bottom: 40px; }
+        
+        .section { margin-bottom: 50px; }
+        .section h2 { font-size: 1.5rem; margin-bottom: 20px; color: #64ffda; }
+        .section h3 { font-size: 1.2rem; margin: 25px 0 15px; color: #fff; }
+        
+        .matrix { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 25px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.1); }
+        .matrix h4 { color: #64ffda; margin-bottom: 15px; font-size: 1.1rem; }
+        
+        .matrix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .matrix-quadrant { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 20px; text-align: center; }
+        .matrix-quadrant h5 { font-size: 1rem; margin-bottom: 10px; }
+        .matrix-quadrant p { font-size: 0.9rem; color: #ccd6f6; }
+        .quadrant-high { border: 2px solid #64ffda; }
+        .quadrant-low { border: 2px solid rgba(255,255,255,0.2); }
+        .quadrant-high h5 { color: #64ffda; }
+        .quadrant-low h5 { color: #8892b0; }
+        
+        .decision-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .decision-table th, .decision-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .decision-table th { color: #8892b0; background: rgba(255,255,255,0.05); font-weight: 500; }
+        .decision-table tr:hover { background: rgba(255,255,255,0.02); }
+        .weight { color: #64ffda; font-weight: 600; }
+        .pass { color: #64ffda; }
+        .fail { color: #e94560; }
+        
+        .flowchart { background: #16213e; border-radius: 12px; padding: 30px; margin: 20px 0; }
+        .flow-node { display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 10px 0; }
+        .flow-question { background: #3498db; color: #fff; padding: 15px 25px; border-radius: 8px; font-weight: 600; text-align: center; }
+        .flow-options { display: flex; gap: 20px; margin: 10px 0; }
+        .flow-option { background: rgba(100,255,218,0.1); border: 1px solid #64ffda; padding: 10px 20px; border-radius: 8px; color: #64ffda; }
+        .flow-result { background: rgba(100,255,218,0.2); border: 2px solid #64ffda; padding: 15px 25px; border-radius: 8px; }
+        .flow-result.warning { background: rgba(255,193,7,0.2); border-color: #ffc107; color: #ffc107; }
+        .flow-result.danger { background: rgba(233,69,96,0.2); border-color: #e94560; color: #e94560; }
+        .flow-arrow { color: #8892b0; font-size: 1.5rem; }
+        
+        .formula { background: #16213e; padding: 20px; border-radius: 8px; margin: 15px 0; font-family: monospace; }
+        .formula code { color: #64ffda; font-size: 1.1rem; }
+        .formula .result { margin-top: 10px; color: #ccd6f6; }
+        
+        .priority-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+        .priority-card { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 15px; text-align: center; }
+        .priority-card.p0 { border: 2px solid #e94560; }
+        .priority-card.p1 { border: 2px solid #ffc107; }
+        .priority-card.p2 { border: 2px solid #3498db; }
+        .priority-card.p3 { border: 2px solid #8892b0; }
+        .priority-label { font-weight: 700; font-size: 1.2rem; margin-bottom: 5px; }
+        .priority-card.p0 .priority-label { color: #e94560; }
+        .priority-card.p1 .priority-label { color: #ffc107; }
+        .priority-card.p2 .priority-label { color: #3498db; }
+        .priority-card.p3 .priority-label { color: #8892b0; }
+        .priority-action { font-size: 0.85rem; color: #ccd6f6; }
+        
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.1); }
+        .comparison-table th { background: rgba(255,255,255,0.05); color: #8892b0; }
+        
+        .funnel { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
+        .funnel-stage { display: flex; align-items: center; justify-content: center; padding: 12px 30px; margin: 2px 0; background: rgba(100,255,218,0.1); border-radius: 4px; width: 100%; max-width: 400px; }
+        .funnel-stage span { color: #ccd6f6; }
+        .funnel-stage .percent { color: #64ffda; font-weight: 600; margin-left: auto; }
+        
+        .access-matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        .access-cell { background: rgba(255,255,255,0.05); padding: 12px; text-align: center; border-radius: 4px; }
+        .access-cell.header { color: #8892b0; font-weight: 500; }
+        .access-cell.yes { color: #64ffda; }
+        .access-cell.no { color: #e94560; }
+        
+        @media (max-width: 768px) {
+            .matrix-grid { grid-template-columns: 1fr; }
+            .priority-grid { grid-template-columns: repeat(2, 1fr); }
+            .access-matrix { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav">
+            <a href="index.html">📊 案例数据库</a>
+            <a href="failure-matrix.html">🔴 失败矩阵</a>
+            <a href="decision-tree.html" class="active">🌲 决策树</a>
+            <a href="risk-assessment.html">⚡ 风险评估</a>
+        </nav>
+        
+        <h1>决策树</h1>
+        <p class="subtitle">系统性创业决策框架，助你在关键路口做出正确选择</p>
+        
+        <div class="section">
+            <h2>📍 一、战略决策框架</h2>
+            
+            <div class="matrix">
+                <h4>1.1 To-Do/Not-To-Do Matrix</h4>
+                <p style="color:#ccd6f6;margin-bottom:15px;">评估维度权重与决策标准</p>
+                <table class="decision-table">
+                    <tr><th>决策类型</th><th>评估维度</th><th class="weight">权重</th><th>决策标准</th></tr>
+                    <tr><td rowspan=4>新功能开发</td><td>用户需求强度</td><td class="weight">30%</td><td>Top 3 需求</td></tr>
+                    <tr><td>技术可行性</td><td class="weight">20%</td><td>核心团队可实现</td></tr>
+                    <tr><td>市场差异化</td><td class="weight">25%</td><td>竞品无/弱</td></tr>
+                    <tr><td>单位经济影响</td><td class="weight">25%</td><td>正向贡献</td></tr>
+                </table>
+                <p style="margin-top:15px;"><strong>评分标准:</strong> 1-5分，<span class="pass">≥ 3.5 启动</span>，<span class="fail">&lt; 2.5 放弃</span></p>
+            </div>
+            
+            <div class="matrix">
+                <h4>1.2 市场进入决策</h4>
+                <div class="matrix-grid">
+                    <div class="matrix-quadrant quadrant-high">
+                        <h5>高吸引力 + 高差异化</h5>
+                        <p>全力进入</p>
+                    </div>
+                    <div class="matrix-quadrant quadrant-high">
+                        <h5>高吸引力 + 低差异化</h5>
+                        <p>选择性进入 / 合作</p>
+                    </div>
+                    <div class="matrix-quadrant quadrant-low">
+                        <h5>低吸引力 + 高差异化</h5>
+                        <p>保持存在</p>
+                    </div>
+                    <div class="matrix-quadrant quadrant-low">
+                        <h5>低吸引力 + 低差异化</h5>
+                        <p>退出</p>
+                    </div>
+                </div>
+                <p style="text-align:center;color:#8892b0;">← 低差异化 | 高差异化 →<br>↑ 高市场吸引力 | 低市场吸引力 ↓</p>
+            </div>
+            
+            <div class="matrix">
+                <h4>1.3 赛道选择决策</h4>
+                <table class="decision-table">
+                    <tr><th>评估维度</th><th>问题清单</th></tr>
+                    <tr><td>市场</td><td>TAM > $1B? 增速 > 15%? 集中度低?</td></tr>
+                    <tr><td>竞争</td><td>有明显痛点? 存在空白?</td></tr>
+                    <tr><td>时机</td><td>基础设施成熟? 认知教育完成?</td></tr>
+                    <tr><td>团队</td><td>有行业积累? 能快速建立壁垒?</td></tr>
+                </table>
+                <p style="margin-top:15px;"><strong>通过标准:</strong> 4项中至少3项优秀</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💰 二、融资决策框架</h2>
+            
+            <div class="matrix">
+                <h4>2.1 融资时机评估</h4>
+                <table class="decision-table">
+                    <tr><th>因素</th><th class="pass">好时机</th><th class="fail">坏时机</th></tr>
+                    <tr><td>数据</td><td>连续增长，趋势明确</td><td>波动或下滑</td></tr>
+                    <tr><td>市场</td><td>估值上升期</td><td>寒冬或动荡</td></tr>
+                    <tr><td>竞争</td><td>领先优势</td><td>被追赶</td></tr>
+                    <tr><td>资金</td><td>Runway 12-18月</td><td>&lt; 6个月</td></tr>
+                </table>
+            </div>
+            
+            <div class="matrix">
+                <h4>2.2 估值与股份决策</h4>
+                <div class="flowchart">
+                    <div class="flow-node">
+                        <div class="flow-question">估值 & 股份 如何权衡?</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-options">
+                            <div class="flow-option">早期 → 股份优先</div>
+                            <div class="flow-option">中后期 → 估值优先</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="color:#ccd6f6;margin-top:15px;"><strong>核心原则:</strong></p>
+                <ul style="color:#ccd6f6;margin-left:20px;">
+                    <li>早期: 股份 &gt; 估值（用股份换时间和资源）</li>
+                    <li>中后期: 估值 &gt; 股份（保持控制权和后续空间）</li>
+                </ul>
+            </div>
+            
+            <div class="matrix">
+                <h4>2.3 投资人选择</h4>
+                <table class="decision-table">
+                    <tr><th>考量因素</th><th class="weight">权重</th><th>评估问题</th></tr>
+                    <tr><td>资源导入</td><td class="weight">35%</td><td>能带来客户/人才/战略?</td></tr>
+                    <tr><td>品牌背书</td><td class="weight">25%</td><td>能提升下轮估值?</td></tr>
+                    <tr><td>条款保护</td><td class="weight">20%</td><td>是否有坑?</td></tr>
+                    <tr><td>沟通效率</td><td class="weight">20%</td><td>能及时响应?</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🛠️ 三、产品决策框架</h2>
+            
+            <div class="matrix">
+                <h4>3.1 功能优先级 - RICE 框架</h4>
+                <div class="formula">
+                    <code>Priority = (Reach × Impact × Confidence) / Effort</code>
+                    <div class="result">
+                        <strong>分数 &gt; 100</strong> → P0 立即开发<br>
+                        <strong>分数 50-100</strong> → P1 本季度完成<br>
+                        <strong>分数 20-50</strong> → P2 下季度考虑<br>
+                        <strong>分数 &lt; 20</strong> → P3 暂缓
+                    </div>
+                </div>
+            </div>
+            
+            <div class="matrix">
+                <h4>3.2 Build/Buy/Partner 决策</h4>
+                <table class="comparison-table">
+                    <tr><th>选项</th><th>适用场景</th><th>风险</th></tr>
+                    <tr><td><strong>Build</strong></td><td>核心差异化</td><td>资源投入大</td></tr>
+                    <tr><td><strong>Buy</strong></td><td>非核心，紧急</td><td>集成风险</td></tr>
+                    <tr><td><strong>Partner</strong></td><td>互补能力</td><td>依赖关系</td></tr>
+                </table>
+                <p style="margin-top:15px;"><strong>决策标准:</strong></p>
+                <ul style="color:#ccd6f6;margin-left:20px;">
+                    <li>核心能力 → 100% Build</li>
+                    <li>非核心紧急 → Buy</li>
+                    <li>互补能力 → Partner</li>
+                </ul>
+            </div>
+            
+            <div class="matrix">
+                <h4>3.3 定价决策</h4>
+                <table class="comparison-table">
+                    <tr><th>定价策略</th><th>适用场景</th><th>优缺点</th></tr>
+                    <tr><td>成本加��</td><td>竞争激烈</td><td>简单，但难差异化</td></tr>
+                    <tr><td>价值定价</td><td>差异化强</td><td>利润高，但需教育</td></tr>
+                    <tr><td>竞品对标</td><td>成熟市场</td><td>安全，但难突破</td></tr>
+                    <tr><td>动态定价</td><td>平台型</td><td>灵活，但复杂</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>👥 四、团队决策框架</h2>
+            
+            <div class="matrix">
+                <h4>4.1 招聘决策 - Hiring Funnel</h4>
+                <div class="funnel">
+                    <div class="funnel-stage"><span>申请</span><span class="percent">100%</span></div>
+                    <div class="funnel-stage"><span>筛选</span><span class="percent">30%</span></div>
+                    <div class="funnel-stage"><span>面试</span><span class="percent">10%</span></div>
+                    <div class="funnel-stage"><span>评估</span><span class="percent">5%</span></div>
+                    <div class="funnel-stage"><span>试用</span><span class="percent">80%</span></div>
+                    <div class="funnel-stage"><span>转正</span><span class="percent">100%</span></div>
+                </div>
+                
+                <table class="decision-table" style="margin-top:20px;">
+                    <tr><th>岗位类型</th><th>评估重点</th><th>试用关键指标</th></tr>
+                    <tr><td>销售</td><td>成交流程</td><td>3个月成单</td></tr>
+                    <tr><td>研发</td><td>代码质量</td><td>PR通过率</td></tr>
+                    <tr><td>运营</td><td>执行效率</td><td>KPI达成</td></tr>
+                    <tr><td>管理</td><td>团队建设</td><td>离职率</td></tr>
+                </table>
+            </div>
+            
+            <div class="matrix">
+                <h4>4.2 关键决策权限</h4>
+                <div class="access-matrix">
+                    <div class="access-cell header">决策类型</div>
+                    <div class="access-cell header">创始人</div>
+                    <div class="access-cell header">高管</div>
+                    <div class="access-cell header">经理</div>
+                    
+                    <div class="access-cell">战略方向</div>
+                    <div class="access-cell yes">✅</div>
+                    <div class="access-cell no">❌</div>
+                    <div class="access-cell no">❌</div>
+                    
+                    <div class="access-cell">年度预算</div>
+                    <div class="access-cell yes">✅</div>
+                    <div class="access-cell">建议</div>
+                    <div class="access-cell no">❌</div>
+                    
+                    <div class="access-cell">招聘(高管)</div>
+                    <div class="access-cell yes">✅</div>
+                    <div class="access-cell no">❌</div>
+                    <div class="access-cell no">❌</div>
+                    
+                    <div class="access-cell">招聘(一般)</div>
+                    <div class="access-cell">建议</div>
+                    <div class="access-cell yes">✅</div>
+                    <div class="access-cell yes">✅</div>
+                    
+                    <div class="access-cell">产品功能</div>
+                    <div class="access-cell">原则</div>
+                    <div class="access-cell yes">✅</div>
+                    <div class="access-cell yes">✅</div>
+                    
+                    <div class="access-cell">日常运营</div>
+                    <div class="access-cell no">❌</div>
+                    <div class="access-cell yes">✅</div>
+                    <div class="access-cell yes">✅</div>
+                </div>
+            </div>
+            
+            <div class="matrix">
+                <h4>4.3 股权激励建议</h4>
+                <table class="decision-table">
+                    <tr><th>阶段</th><th>建议比例</th><th>Vesting</th></tr>
+                    <tr><td>核心高管</td><td class="weight">0.5-2%</td><td>4年</td></tr>
+                    <tr><td>关键员工</td><td class="weight">0.1-0.5%</td><td>4年</td></tr>
+                    <tr><td>早期员工</td><td class="weight">0.05-0.2%</td><td>3年</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🚪 五、退出决策框架</h2>
+            
+            <div class="matrix">
+                <h4>5.1 并购评估</h4>
+                <table class="decision-table">
+                    <tr><th>维度</th><th>评估要点</th></tr>
+                    <tr><td>战略价值</td><td>协同效应多大?</td></tr>
+                    <tr><td>价格</td><td>vs 独立发展价值</td></tr>
+                    <tr><td>独立性</td><td>团队保留条件</td></tr>
+                    <tr><td>时机</td><td>最佳窗口期</td></tr>
+                </table>
+            </div>
+            
+            <div class="matrix">
+                <h4>5.2 继续运营评估 - 季度复盘问题</h4>
+                <ul style="color:#ccd6f6;margin-left:20px;line-height:2;">
+                    <li>核心假设是否还成立?</li>
+                    <li>里程碑达成率?</li>
+                    <li>资金消耗速度?</li>
+                    <li>团队状态?</li>
+                    <li>市场变化?</li>
+                </ul>
+            </div>
+            
+            <div class="matrix">
+                <h4>5.3 继续 vs 退出 决策树</h4>
+                <div class="flowchart">
+                    <div class="flow-node">
+                        <div class="flow-question">是否有清晰盈利路径?</div>
+                        <div class="flow-arrow">↓</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-options">
+                            <div class="flow-option">是</div>
+                            <div class="flow-option">否</div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-question">资源是否足够?</div>
+                        <div class="flow-arrow">↓</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-options">
+                            <div class="flow-result">继续执行</div>
+                            <div class="flow-result warning">融资/收缩/退出</div>
+                        </div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-question">6个月能验证盈利路径?</div>
+                        <div class="flow-arrow">↓</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-options">
+                            <div class="flow-result">聚焦验证</div>
+                            <div class="flow-result danger">转型/退出</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
