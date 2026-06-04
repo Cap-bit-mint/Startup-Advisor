@@ -126,24 +126,24 @@
     }
 
     // 翻译案例卡片内容
-    async function translateCase(case, targetLang = 'zh') {
-        if (targetLang === 'en') return case;
+    async function translateCase(c, targetLang = 'zh') {
+        if (targetLang === 'en') return c;
         
         const t = {};
         for (const key of ['name', 'sector', 'failure_analysis', 'market_analysis']) {
-            if (case[key]) {
-                t[key] = await translate(case[key], targetLang);
+            if (c[key]) {
+                t[key] = await translate(c[key], targetLang);
                 await new Promise(r => setTimeout(r, 100));
             } else {
-                t[key] = case[key];
+                t[key] = c[key];
             }
         }
-        return { ...case, ...t };
+        return { ...c, ...t };
     }
 
     // 加载数据
     const loadingEl = document.getElementById('loading');
-    loadingEl.innerHTML = '⏳ 正在加载（首次加载可能需要几秒）...';
+    loadingEl.innerHTML = '⏳ 正在加载案例数据（首次加载可能需要几秒...）...';
     
     fetch('docs/data/cases.json', { timeout: 30000 })
         .then(r => {
